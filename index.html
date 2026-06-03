@@ -7,61 +7,7 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <section class="workspace">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">AI Native Frontend Lab</p>
-            <h1>Task Planner</h1>
-          </div>
-          <div class="status-pill" id="statusPill">Mock AI</div>
-        </header>
-
-        <section class="composer" aria-label="planning request">
-          <label for="prompt">Planning request</label>
-          <textarea
-            id="prompt"
-            rows="4"
-            placeholder="예: 다음 주 발표 준비 일정을 현실적으로 쪼개줘"
-          ></textarea>
-          <div class="composer-actions">
-            <button class="secondary" id="sampleButton" type="button">샘플</button>
-            <button id="generateButton" type="button">생성</button>
-          </div>
-        </section>
-
-        <section class="panel" aria-label="ai preview">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Preview</p>
-              <h2>AI suggestions</h2>
-            </div>
-            <button class="secondary" id="regenerateButton" type="button" disabled>재생성</button>
-          </div>
-          <div class="progress" id="progress" hidden>
-            <span></span>
-          </div>
-          <div class="empty-state" id="previewEmpty">요청을 입력하면 적용 전 검토 가능한 작업 카드가 여기에 나타납니다.</div>
-          <div class="card-grid" id="suggestionList"></div>
-          <div class="apply-row">
-            <button id="applyButton" type="button" disabled>선택 항목 적용</button>
-          </div>
-        </section>
-      </section>
-
-      <aside class="side-panel" aria-label="approved tasks">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">App State</p>
-            <h2>Approved tasks</h2>
-          </div>
-          <button class="secondary icon-button" id="undoButton" type="button" title="Undo" disabled>↶</button>
-        </div>
-        <div class="empty-state compact" id="approvedEmpty">아직 적용된 작업이 없습니다.</div>
-        <ol class="approved-list" id="approvedList"></ol>
-      </aside>
-    </main>
-
-    <script src="./src/app.js" type="module"></script>
+    <div id="root"></div>
+    <script src="/src/main.tsx" type="module"></script>
   </body>
 </html>

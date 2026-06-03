@@ -1,6 +1,6 @@
-# Frontend AI Native
+# AI Native Practice
 
-Frontend-focused study project for learning AI-native product patterns without a backend.
+Frontend-focused React and TypeScript study project for learning AI-native product patterns without a backend.
 
 ## First Experiment
 
@@ -28,10 +28,22 @@ Real LLM API calls can be added later with a serverless function so API keys are
 
 ## Run
 
-Open `index.html` in a browser, or run a tiny static server:
+Install dependencies:
 
 ```bash
-python3 -m http.server 5173
+npm install
 ```
 
-Then open `http://localhost:5173`.
+Start the Vite dev server:
+
+```bash
+npm run dev
+```
+
+Then open the local URL printed by Vite.
+
+## Verify
+
+```bash
+npm run build
+```
