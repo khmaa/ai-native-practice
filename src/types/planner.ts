@@ -1,0 +1,14 @@
+export type PlannerStatus = "idle" | "generating" | "ready";
+
+export type TaskSuggestion = {
+  id: string;
+  title: string;
+  detail: string;
+  day: string;
+  duration: string;
+  selected: boolean;
+};
+
+export type ApprovedTask = Omit<TaskSuggestion, "selected">;
+
+export type TaskSuggestionPatch = Partial<TaskSuggestion>;
