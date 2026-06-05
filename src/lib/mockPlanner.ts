@@ -1,4 +1,4 @@
-import type { TaskSuggestion } from "../types/planner";
+import type { PlanResponse, PlanTaskDraft } from "../types/aiContract";
 
 export const samplePrompts = [
   "다음 주 발표 준비 일정을 현실적으로 쪼개줘",
@@ -14,24 +14,39 @@ export const streamSteps = [
   "마지막 작업을 정리하는 중...",
 ];
 
-type TaskSeed = [title: string, detail: string, day: string, duration: string];
+export function createMockPlanResponse(prompt: string): unknown {
+  return {
+    tasks: getTaskSeeds(prompt).map(([title, detail, day, duration]) => ({
+      title,
+      detail,
+      day,
+      duration,
+    })),
+  } satisfies PlanResponse;
+}
 
-export function createMockPlan(prompt: string): TaskSuggestion[] {
-  return getTaskSeeds(prompt).map(([title, detail, day, duration], index) => ({
+export function createBrokenPlanResponse(): unknown {
+  return {
+    tasks: "좋아요, 제가 알아서 이번 주 계획을 멋지게 정리해볼게요.",
+  };
+}
+
+export function toTaskSuggestion({ title, detail, day, duration }: PlanTaskDraft, index: number) {
+  return {
     id: crypto.randomUUID(),
     title,
     detail,
     day,
     duration,
     selected: index < 3,
-  }));
+  };
 }
 
 export function getRandomSamplePrompt() {
   return samplePrompts[Math.floor(Math.random() * samplePrompts.length)];
 }
 
-function getTaskSeeds(prompt: string): TaskSeed[] {
+function getTaskSeeds(prompt: string): [title: string, detail: string, day: string, duration: string][] {
   const normalized = prompt.toLowerCase();
   const isStudy = normalized.includes("공부") || normalized.includes("frontend") || normalized.includes("ai native");
   const isPresentation = normalized.includes("발표") || normalized.includes("presentation");

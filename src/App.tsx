@@ -2,7 +2,14 @@ import { useMemo, useRef, useState } from "react";
 import { ApprovedTasksPanel } from "./components/ApprovedTasksPanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { SuggestionPreview } from "./components/SuggestionPreview";
-import { createMockPlan, getRandomSamplePrompt, streamSteps } from "./lib/mockPlanner";
+import {
+  createBrokenPlanResponse,
+  createMockPlanResponse,
+  getRandomSamplePrompt,
+  streamSteps,
+  toTaskSuggestion,
+} from "./lib/mockPlanner";
+import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type { ApprovedTask, PlannerStatus, TaskSuggestion, TaskSuggestionPatch } from "./types/planner";
 
@@ -11,6 +18,7 @@ export default function App() {
   const [lastPrompt, setLastPrompt] = useState("");
   const [status, setStatus] = useState<PlannerStatus>("idle");
   const [streamMessage, setStreamMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [suggestions, setSuggestions] = useState<TaskSuggestion[]>([]);
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
@@ -27,15 +35,34 @@ export default function App() {
     }
 
     const runId = crypto.randomUUID();
-    const plan = createMockPlan(trimmed);
+    const aiResponse = createMockPlanResponse(trimmed);
 
     runIdRef.current = runId;
     setLastPrompt(trimmed);
     setStatus("generating");
     setSuggestions([]);
+    setErrorMessage("");
     setStreamMessage("요청의 목표와 제약을 읽는 중...");
 
     await wait(420);
+
+    setStreamMessage("AI 응답이 계약에 맞는지 검증하는 중...");
+    await wait(420);
+
+    if (runIdRef.current !== runId) {
+      return;
+    }
+
+    const validation = validatePlanResponse(aiResponse);
+
+    if (!validation.ok) {
+      setStatus("error");
+      setStreamMessage("");
+      setErrorMessage(validation.message);
+      return;
+    }
+
+    const plan = validation.data.tasks.map(toTaskSuggestion);
 
     for (const [index, item] of plan.entries()) {
       if (runIdRef.current !== runId) {
@@ -61,6 +88,31 @@ export default function App() {
 
     setStatus("ready");
     setStreamMessage("");
+  }
+
+  async function testContractFailure() {
+    const runId = crypto.randomUUID();
+    runIdRef.current = runId;
+    setLastPrompt((current) => current || "계약 실패 테스트");
+    setStatus("generating");
+    setSuggestions([]);
+    setErrorMessage("");
+    setStreamMessage("깨진 AI 응답을 검증하는 중...");
+
+    await wait(650);
+
+    if (runIdRef.current !== runId) {
+      return;
+    }
+
+    const validation = validatePlanResponse(createBrokenPlanResponse());
+
+    if (!validation.ok) {
+      setStatus("error");
+      setStreamMessage("");
+      setErrorMessage(validation.message);
+      return;
+    }
   }
 
   function updateSuggestion(id: string, patch: TaskSuggestionPatch) {
@@ -122,8 +174,10 @@ export default function App() {
           selectedCount={selectedCount}
           isGenerating={isGenerating}
           streamMessage={streamMessage}
+          errorMessage={errorMessage}
           canRegenerate={Boolean(lastPrompt) && !isGenerating}
           onRegenerate={() => generateSuggestions(lastPrompt || prompt)}
+          onContractFailureTest={testContractFailure}
           onApply={applySelectedSuggestions}
           onSuggestionChange={updateSuggestion}
         />
