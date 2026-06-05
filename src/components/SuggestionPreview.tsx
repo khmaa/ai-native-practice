@@ -6,8 +6,10 @@ export function SuggestionPreview({
   selectedCount,
   isGenerating,
   streamMessage,
+  errorMessage,
   canRegenerate,
   onRegenerate,
+  onContractFailureTest,
   onApply,
   onSuggestionChange,
 }: {
@@ -15,8 +17,10 @@ export function SuggestionPreview({
   selectedCount: number;
   isGenerating: boolean;
   streamMessage: string;
+  errorMessage: string;
   canRegenerate: boolean;
   onRegenerate: () => void;
+  onContractFailureTest: () => void;
   onApply: () => void;
   onSuggestionChange: (id: string, patch: TaskSuggestionPatch) => void;
 }) {
@@ -27,9 +31,14 @@ export function SuggestionPreview({
           <p className="eyebrow">Preview</p>
           <h2>AI suggestions</h2>
         </div>
-        <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
-          재생성
-        </button>
+        <div className="panel-actions">
+          <button className="secondary" type="button" disabled={isGenerating} onClick={onContractFailureTest}>
+            계약 실패 테스트
+          </button>
+          <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
+            재생성
+          </button>
+        </div>
       </div>
 
       {isGenerating ? (
@@ -39,6 +48,8 @@ export function SuggestionPreview({
       ) : null}
 
       {streamMessage ? <div className="stream-status">{streamMessage}</div> : null}
+
+      {errorMessage ? <div className="error-state">{errorMessage}</div> : null}
 
       {suggestions.length === 0 && !isGenerating ? (
         <div className="empty-state">요청을 입력하면 적용 전 검토 가능한 작업 카드가 여기에 나타납니다.</div>

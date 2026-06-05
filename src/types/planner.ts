@@ -1,4 +1,4 @@
-export type PlannerStatus = "idle" | "generating" | "ready";
+export type PlannerStatus = "idle" | "generating" | "ready" | "error";
 
 export type TaskSuggestion = {
   id: string;
