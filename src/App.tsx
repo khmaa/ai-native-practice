@@ -11,14 +11,20 @@ import {
 } from "./lib/mockPlanner";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
-import type { ApprovedTask, PlannerStatus, TaskSuggestion, TaskSuggestionPatch } from "./types/planner";
+import type {
+  ApprovedTask,
+  PlannerIssue,
+  PlannerStatus,
+  TaskSuggestion,
+  TaskSuggestionPatch,
+} from "./types/planner";
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
   const [lastPrompt, setLastPrompt] = useState("");
   const [status, setStatus] = useState<PlannerStatus>("idle");
   const [streamMessage, setStreamMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [issue, setIssue] = useState<PlannerIssue | null>(null);
   const [suggestions, setSuggestions] = useState<TaskSuggestion[]>([]);
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
@@ -41,7 +47,7 @@ export default function App() {
     setLastPrompt(trimmed);
     setStatus("generating");
     setSuggestions([]);
-    setErrorMessage("");
+    setIssue(null);
     setStreamMessage("요청의 목표와 제약을 읽는 중...");
 
     await wait(420);
@@ -58,7 +64,7 @@ export default function App() {
     if (!validation.ok) {
       setStatus("error");
       setStreamMessage("");
-      setErrorMessage(validation.message);
+      setIssue(createContractIssue(validation.message));
       return;
     }
 
@@ -95,8 +101,7 @@ export default function App() {
     runIdRef.current = runId;
     setLastPrompt((current) => current || "계약 실패 테스트");
     setStatus("generating");
-    setSuggestions([]);
-    setErrorMessage("");
+    setIssue(null);
     setStreamMessage("깨진 AI 응답을 검증하는 중...");
 
     await wait(650);
@@ -110,7 +115,7 @@ export default function App() {
     if (!validation.ok) {
       setStatus("error");
       setStreamMessage("");
-      setErrorMessage(validation.message);
+      setIssue(createContractIssue(validation.message));
       return;
     }
   }
@@ -174,10 +179,11 @@ export default function App() {
           selectedCount={selectedCount}
           isGenerating={isGenerating}
           streamMessage={streamMessage}
-          errorMessage={errorMessage}
+          issue={issue}
           canRegenerate={Boolean(lastPrompt) && !isGenerating}
           onRegenerate={() => generateSuggestions(lastPrompt || prompt)}
           onContractFailureTest={testContractFailure}
+          onDismissIssue={() => setIssue(null)}
           onApply={applySelectedSuggestions}
           onSuggestionChange={updateSuggestion}
         />
@@ -186,4 +192,12 @@ export default function App() {
       <ApprovedTasksPanel approved={approved} canUndo={history.length > 0} onUndo={undoApprovedTasks} />
     </main>
   );
+}
+
+function createContractIssue(message: string): PlannerIssue {
+  return {
+    title: "AI 응답을 초안으로 사용할 수 없습니다.",
+    message,
+    recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
+  };
 }

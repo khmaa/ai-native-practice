@@ -1,4 +1,4 @@
-import type { TaskSuggestion, TaskSuggestionPatch } from "../types/planner";
+import type { PlannerIssue, TaskSuggestion, TaskSuggestionPatch } from "../types/planner";
 import { TaskCard } from "./TaskCard";
 
 export function SuggestionPreview({
@@ -6,10 +6,11 @@ export function SuggestionPreview({
   selectedCount,
   isGenerating,
   streamMessage,
-  errorMessage,
+  issue,
   canRegenerate,
   onRegenerate,
   onContractFailureTest,
+  onDismissIssue,
   onApply,
   onSuggestionChange,
 }: {
@@ -17,10 +18,11 @@ export function SuggestionPreview({
   selectedCount: number;
   isGenerating: boolean;
   streamMessage: string;
-  errorMessage: string;
+  issue: PlannerIssue | null;
   canRegenerate: boolean;
   onRegenerate: () => void;
   onContractFailureTest: () => void;
+  onDismissIssue: () => void;
   onApply: () => void;
   onSuggestionChange: (id: string, patch: TaskSuggestionPatch) => void;
 }) {
@@ -49,7 +51,21 @@ export function SuggestionPreview({
 
       {streamMessage ? <div className="stream-status">{streamMessage}</div> : null}
 
-      {errorMessage ? <div className="error-state">{errorMessage}</div> : null}
+      {issue ? (
+        <div className="error-state">
+          <strong>{issue.title}</strong>
+          <span>{issue.message}</span>
+          <p>{issue.recovery}</p>
+          <div className="error-actions">
+            <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
+              다시 생성
+            </button>
+            <button className="secondary" type="button" onClick={onDismissIssue}>
+              닫기
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {suggestions.length === 0 && !isGenerating ? (
         <div className="empty-state">요청을 입력하면 적용 전 검토 가능한 작업 카드가 여기에 나타납니다.</div>
