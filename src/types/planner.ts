@@ -12,3 +12,9 @@ export type TaskSuggestion = {
 export type ApprovedTask = Omit<TaskSuggestion, "selected">;
 
 export type TaskSuggestionPatch = Partial<TaskSuggestion>;
+
+export type PlannerIssue = {
+  title: string;
+  message: string;
+  recovery: string;
+};

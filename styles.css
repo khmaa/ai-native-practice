@@ -249,6 +249,8 @@ textarea:focus {
 }
 
 .error-state {
+  display: grid;
+  gap: 8px;
   margin: -4px 0 16px;
   border: 1px solid rgba(180, 63, 87, 0.24);
   border-radius: 8px;
@@ -258,6 +260,25 @@ textarea:focus {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
+}
+
+.error-state strong,
+.error-state span,
+.error-state p {
+  display: block;
+}
+
+.error-state p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .card-grid {
