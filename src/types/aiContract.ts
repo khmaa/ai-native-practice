@@ -1,3 +1,9 @@
+export type PlanRequest = {
+  prompt: string;
+  maxTasks: number;
+  locale: "ko";
+};
+
 export type PlanTaskDraft = {
   title: string;
   detail: string;

@@ -2,13 +2,8 @@ import { useMemo, useRef, useState } from "react";
 import { ApprovedTasksPanel } from "./components/ApprovedTasksPanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { SuggestionPreview } from "./components/SuggestionPreview";
-import {
-  createBrokenPlanResponse,
-  createMockPlanResponse,
-  getRandomSamplePrompt,
-  streamSteps,
-  toTaskSuggestion,
-} from "./lib/mockPlanner";
+import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
+import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type {
@@ -41,23 +36,28 @@ export default function App() {
     }
 
     const runId = crypto.randomUUID();
-    const aiResponse = createMockPlanResponse(trimmed);
-
     runIdRef.current = runId;
     setLastPrompt(trimmed);
     setStatus("generating");
     setSuggestions([]);
     setIssue(null);
-    setStreamMessage("요청의 목표와 제약을 읽는 중...");
+    setStreamMessage("사용자 의도를 AI 요청 계약으로 정리하는 중...");
 
-    await wait(420);
-
-    setStreamMessage("AI 응답이 계약에 맞는지 검증하는 중...");
     await wait(420);
 
     if (runIdRef.current !== runId) {
       return;
     }
+
+    setStreamMessage("AI draft 응답을 요청하는 중...");
+    const aiResponse = await requestPlanDraft(createPlanRequest(trimmed));
+
+    if (runIdRef.current !== runId) {
+      return;
+    }
+
+    setStreamMessage("AI 응답이 출력 계약에 맞는지 검증하는 중...");
+    await wait(420);
 
     const validation = validatePlanResponse(aiResponse);
 
@@ -102,15 +102,17 @@ export default function App() {
     setLastPrompt((current) => current || "계약 실패 테스트");
     setStatus("generating");
     setIssue(null);
-    setStreamMessage("깨진 AI 응답을 검증하는 중...");
-
-    await wait(650);
+    setStreamMessage("깨진 AI draft 응답을 요청하는 중...");
+    const aiResponse = await requestPlanDraft(createPlanRequest("계약 실패 테스트"), "contract-failure");
 
     if (runIdRef.current !== runId) {
       return;
     }
 
-    const validation = validatePlanResponse(createBrokenPlanResponse());
+    setStreamMessage("깨진 응답이 출력 계약을 통과하는지 검증하는 중...");
+    await wait(420);
+
+    const validation = validatePlanResponse(aiResponse);
 
     if (!validation.ok) {
       setStatus("error");
