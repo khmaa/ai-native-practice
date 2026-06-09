@@ -53,6 +53,12 @@ button:disabled {
   background: var(--surface);
 }
 
+.secondary.danger {
+  color: var(--accent-2);
+  border-color: rgba(180, 63, 87, 0.28);
+  background: rgba(180, 63, 87, 0.07);
+}
+
 .icon-button {
   width: 40px;
   padding: 0;
