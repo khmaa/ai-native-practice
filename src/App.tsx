@@ -24,6 +24,8 @@ export default function App() {
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
   const runIdRef = useRef("");
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
 
   const isGenerating = status === "generating";
   const selectedCount = useMemo(() => suggestions.filter((item) => item.selected).length, [suggestions]);
@@ -36,10 +38,13 @@ export default function App() {
     }
 
     const runId = crypto.randomUUID();
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    draftBackupRef.current = suggestions;
     runIdRef.current = runId;
     setLastPrompt(trimmed);
     setStatus("generating");
-    setSuggestions([]);
     setIssue(null);
     setStreamMessage("사용자 의도를 AI 요청 계약으로 정리하는 중...");
 
@@ -50,7 +55,29 @@ export default function App() {
     }
 
     setStreamMessage("AI draft 응답을 요청하는 중...");
-    const aiResponse = await requestPlanDraft(createPlanRequest(trimmed));
+    const aiResponse = await requestPlanDraft(createPlanRequest(trimmed), "valid", abortController.signal).catch(
+      (error: unknown) => {
+        if (isAbortError(error)) {
+          return null;
+        }
+
+        throw error;
+      },
+    );
+
+    if (aiResponse === null) {
+      if (runIdRef.current === runId) {
+        setStatus(suggestions.length > 0 ? "ready" : "idle");
+        setStreamMessage("AI 요청을 취소했습니다.");
+        await wait(650);
+
+        if (runIdRef.current === runId) {
+          setStreamMessage("");
+        }
+      }
+
+      return;
+    }
 
     if (runIdRef.current !== runId) {
       return;
@@ -69,6 +96,7 @@ export default function App() {
     }
 
     const plan = validation.data.tasks.map(toTaskSuggestion);
+    setSuggestions([]);
 
     for (const [index, item] of plan.entries()) {
       if (runIdRef.current !== runId) {
@@ -94,16 +122,26 @@ export default function App() {
 
     setStatus("ready");
     setStreamMessage("");
+    abortControllerRef.current = null;
+    draftBackupRef.current = null;
   }
 
   async function testContractFailure() {
     const runId = crypto.randomUUID();
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    draftBackupRef.current = suggestions;
     runIdRef.current = runId;
     setLastPrompt((current) => current || "계약 실패 테스트");
     setStatus("generating");
     setIssue(null);
     setStreamMessage("깨진 AI draft 응답을 요청하는 중...");
-    const aiResponse = await requestPlanDraft(createPlanRequest("계약 실패 테스트"), "contract-failure");
+    const aiResponse = await requestPlanDraft(
+      createPlanRequest("계약 실패 테스트"),
+      "contract-failure",
+      abortController.signal,
+    );
 
     if (runIdRef.current !== runId) {
       return;
@@ -120,6 +158,23 @@ export default function App() {
       setIssue(createContractIssue(validation.message));
       return;
     }
+  }
+
+  async function cancelGeneration() {
+    if (!abortControllerRef.current) {
+      return;
+    }
+
+    abortControllerRef.current.abort();
+    abortControllerRef.current = null;
+    runIdRef.current = crypto.randomUUID();
+    setSuggestions(draftBackupRef.current ?? []);
+    setStatus(draftBackupRef.current?.length ? "ready" : "idle");
+    draftBackupRef.current = null;
+    setStreamMessage("AI 요청을 취소하고 마지막 유효 초안으로 돌아왔습니다.");
+
+    await wait(650);
+    setStreamMessage("");
   }
 
   function updateSuggestion(id: string, patch: TaskSuggestionPatch) {
@@ -174,6 +229,7 @@ export default function App() {
           onPromptChange={setPrompt}
           onSample={() => setPrompt(getRandomSamplePrompt())}
           onGenerate={() => generateSuggestions(prompt)}
+          onCancel={cancelGeneration}
         />
 
         <SuggestionPreview
@@ -194,6 +250,10 @@ export default function App() {
       <ApprovedTasksPanel approved={approved} canUndo={history.length > 0} onUndo={undoApprovedTasks} />
     </main>
   );
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }
 
 function createContractIssue(message: string): PlannerIssue {
