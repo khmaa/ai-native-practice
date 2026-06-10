@@ -1,7 +1,9 @@
 import { useMemo, useRef, useState } from "react";
 import { ApprovedTasksPanel } from "./components/ApprovedTasksPanel";
+import { PlannerStatePanel } from "./components/PlannerStatePanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { SuggestionPreview } from "./components/SuggestionPreview";
+import { getPlannerStateView } from "./lib/plannerState";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
@@ -29,6 +31,11 @@ export default function App() {
 
   const isGenerating = status === "generating";
   const selectedCount = useMemo(() => suggestions.filter((item) => item.selected).length, [suggestions]);
+  const plannerStateView = getPlannerStateView({
+    status,
+    hasDraft: suggestions.length > 0,
+    issue,
+  });
 
   async function generateSuggestions(sourcePrompt: string) {
     const trimmed = sourcePrompt.trim();
@@ -231,6 +238,8 @@ export default function App() {
           onGenerate={() => generateSuggestions(prompt)}
           onCancel={cancelGeneration}
         />
+
+        <PlannerStatePanel stateView={plannerStateView} />
 
         <SuggestionPreview
           suggestions={suggestions}

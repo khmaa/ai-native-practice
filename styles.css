@@ -147,6 +147,36 @@ h2 {
   padding: 20px;
 }
 
+.state-panel {
+  margin-top: 20px;
+  border: 1px solid rgba(29, 122, 140, 0.2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.state-panel-body {
+  display: grid;
+  gap: 6px;
+}
+
+.state-panel-body strong {
+  font-size: 18px;
+}
+
+.state-panel-body span {
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.state-panel-body small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 label {
   display: block;
   margin-bottom: 10px;
