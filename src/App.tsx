@@ -1,13 +1,16 @@
 import { useMemo, useRef, useState } from "react";
+import { AgentTracePanel } from "./components/AgentTracePanel";
 import { ApprovedTasksPanel } from "./components/ApprovedTasksPanel";
 import { PlannerStatePanel } from "./components/PlannerStatePanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { SuggestionPreview } from "./components/SuggestionPreview";
+import { completeTrace, summarizeUnknownResponse } from "./lib/agentTrace";
 import { getPlannerStateView } from "./lib/plannerState";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
+import type { AgentTrace } from "./types/agentTrace";
 import type {
   ApprovedTask,
   PlannerIssue,
@@ -25,6 +28,7 @@ export default function App() {
   const [suggestions, setSuggestions] = useState<TaskSuggestion[]>([]);
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
+  const [trace, setTrace] = useState<AgentTrace | null>(null);
   const runIdRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
@@ -50,6 +54,16 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
+    const request = createPlanRequest(trimmed);
+    const nextTrace: AgentTrace = {
+      request,
+      mode: "valid",
+      startedAt: Date.now(),
+      responseSummary: "pending",
+      validationStatus: "pending",
+    };
+
+    setTrace(nextTrace);
     setLastPrompt(trimmed);
     setStatus("generating");
     setIssue(null);
@@ -62,15 +76,18 @@ export default function App() {
     }
 
     setStreamMessage("AI draft 응답을 요청하는 중...");
-    const aiResponse = await requestPlanDraft(createPlanRequest(trimmed), "valid", abortController.signal).catch(
-      (error: unknown) => {
-        if (isAbortError(error)) {
-          return null;
-        }
+    const aiResponse = await requestPlanDraft(request, "valid", abortController.signal).catch((error: unknown) => {
+      if (isAbortError(error)) {
+        setTrace(completeTrace(nextTrace, {
+          responseSummary: "request cancelled before response",
+          validationStatus: "cancelled",
+          validationMessage: "cancelled",
+        }));
+        return null;
+      }
 
-        throw error;
-      },
-    );
+      throw error;
+    });
 
     if (aiResponse === null) {
       if (runIdRef.current === runId) {
@@ -94,13 +111,25 @@ export default function App() {
     await wait(420);
 
     const validation = validatePlanResponse(aiResponse);
+    const responseSummary = summarizeUnknownResponse(aiResponse);
 
     if (!validation.ok) {
+      setTrace(completeTrace(nextTrace, {
+        responseSummary,
+        validationStatus: "failed",
+        validationMessage: validation.message,
+      }));
       setStatus("error");
       setStreamMessage("");
       setIssue(createContractIssue(validation.message));
       return;
     }
+
+    setTrace(completeTrace(nextTrace, {
+      responseSummary,
+      validationStatus: "passed",
+      validationMessage: "passed",
+    }));
 
     const plan = validation.data.tasks.map(toTaskSuggestion);
     setSuggestions([]);
@@ -140,15 +169,21 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
+    const request = createPlanRequest("계약 실패 테스트");
+    const nextTrace: AgentTrace = {
+      request,
+      mode: "contract-failure",
+      startedAt: Date.now(),
+      responseSummary: "pending",
+      validationStatus: "pending",
+    };
+
+    setTrace(nextTrace);
     setLastPrompt((current) => current || "계약 실패 테스트");
     setStatus("generating");
     setIssue(null);
     setStreamMessage("깨진 AI draft 응답을 요청하는 중...");
-    const aiResponse = await requestPlanDraft(
-      createPlanRequest("계약 실패 테스트"),
-      "contract-failure",
-      abortController.signal,
-    );
+    const aiResponse = await requestPlanDraft(request, "contract-failure", abortController.signal);
 
     if (runIdRef.current !== runId) {
       return;
@@ -158,8 +193,14 @@ export default function App() {
     await wait(420);
 
     const validation = validatePlanResponse(aiResponse);
+    const responseSummary = summarizeUnknownResponse(aiResponse);
 
     if (!validation.ok) {
+      setTrace(completeTrace(nextTrace, {
+        responseSummary,
+        validationStatus: "failed",
+        validationMessage: validation.message,
+      }));
       setStatus("error");
       setStreamMessage("");
       setIssue(createContractIssue(validation.message));
@@ -240,6 +281,8 @@ export default function App() {
         />
 
         <PlannerStatePanel stateView={plannerStateView} />
+
+        <AgentTracePanel trace={trace} />
 
         <SuggestionPreview
           suggestions={suggestions}
