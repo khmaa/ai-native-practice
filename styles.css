@@ -81,6 +81,7 @@ button:disabled {
 .topbar,
 .composer,
 .panel,
+.trace-panel,
 .side-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -174,6 +175,52 @@ h2 {
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.45;
+}
+
+.trace-panel {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.compact-heading {
+  margin-bottom: 12px;
+}
+
+.trace-grid {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.trace-grid div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.trace-grid div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.trace-grid dt,
+.trace-grid dd {
+  margin: 0;
+}
+
+.trace-grid dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.trace-grid dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
   line-height: 1.45;
 }
 
