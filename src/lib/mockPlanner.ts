@@ -1,4 +1,4 @@
-import type { PlanResponse, PlanTaskDraft } from "../types/aiContract";
+import type { PlanContext, PlanResponse, PlanTaskDraft } from "../types/aiContract";
 
 export const samplePrompts = [
   "다음 주 발표 준비 일정을 현실적으로 쪼개줘",
@@ -14,9 +14,9 @@ export const streamSteps = [
   "마지막 작업을 정리하는 중...",
 ];
 
-export function createMockPlanResponse(prompt: string): unknown {
+export function createMockPlanResponse(prompt: string, context: PlanContext): unknown {
   return {
-    tasks: getTaskSeeds(prompt).map(([title, detail, day, duration]) => ({
+    tasks: applyPlanContext(getTaskSeeds(prompt), context).map(([title, detail, day, duration]) => ({
       title,
       detail,
       day,
@@ -44,6 +44,33 @@ export function toTaskSuggestion({ title, detail, day, duration }: PlanTaskDraft
 
 export function getRandomSamplePrompt() {
   return samplePrompts[Math.floor(Math.random() * samplePrompts.length)];
+}
+
+function applyPlanContext(
+  seeds: [title: string, detail: string, day: string, duration: string][],
+  context: PlanContext,
+) {
+  const existingTitles = new Set([
+    ...context.approvedTaskTitles.map(normalizeTitle),
+    ...context.draftTaskTitles.map(normalizeTitle),
+  ]);
+
+  return seeds.map(([title, detail, day, duration]) => {
+    if (!existingTitles.has(normalizeTitle(title))) {
+      return [title, detail, day, duration] as const;
+    }
+
+    return [
+      `${title} 보완`,
+      `기존 \"${title}\" 작업과 겹치지 않도록 다음 단계와 빠진 조건을 정리`,
+      day,
+      duration,
+    ] as const;
+  });
+}
+
+function normalizeTitle(title: string) {
+  return title.trim().toLocaleLowerCase("ko");
 }
 
 function getTaskSeeds(prompt: string): [title: string, detail: string, day: string, duration: string][] {

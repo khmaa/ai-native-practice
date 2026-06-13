@@ -54,7 +54,7 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
-    const request = createPlanRequest(trimmed);
+    const request = createPlanRequest(trimmed, createPlanContext(approved, suggestions));
     const nextTrace: AgentTrace = {
       request,
       mode: "valid",
@@ -169,7 +169,10 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
-    const request = createPlanRequest("계약 실패 테스트");
+    const request = createPlanRequest(
+      "계약 실패 테스트",
+      createPlanContext(approved, suggestions),
+    );
     const nextTrace: AgentTrace = {
       request,
       mode: "contract-failure",
@@ -313,5 +316,12 @@ function createContractIssue(message: string): PlannerIssue {
     title: "AI 응답을 초안으로 사용할 수 없습니다.",
     message,
     recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
+  };
+}
+
+function createPlanContext(approved: ApprovedTask[], suggestions: TaskSuggestion[]) {
+  return {
+    approvedTaskTitles: approved.map((task) => task.title),
+    draftTaskTitles: suggestions.map((task) => task.title),
   };
 }

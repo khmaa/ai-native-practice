@@ -15,14 +15,15 @@ export async function requestPlanDraft(
     return createBrokenPlanResponse();
   }
 
-  return createMockPlanResponse(request.prompt);
+  return createMockPlanResponse(request.prompt, request.context);
 }
 
-export function createPlanRequest(prompt: string): PlanRequest {
+export function createPlanRequest(prompt: string, context: PlanRequest["context"]): PlanRequest {
   return {
     prompt,
     maxTasks: 5,
     locale: "ko",
+    context,
   };
 }
 
