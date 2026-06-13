@@ -27,6 +27,14 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{trace.request.prompt}</dd>
           </div>
           <div>
+            <dt>Approved context</dt>
+            <dd>{summarizeTitles(trace.request.context.approvedTaskTitles)}</dd>
+          </div>
+          <div>
+            <dt>Draft context</dt>
+            <dd>{summarizeTitles(trace.request.context.draftTaskTitles)}</dd>
+          </div>
+          <div>
             <dt>Response</dt>
             <dd>{trace.responseSummary}</dd>
           </div>
@@ -44,4 +52,8 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
       )}
     </section>
   );
+}
+
+function summarizeTitles(titles: string[]) {
+  return titles.length > 0 ? titles.join(" · ") : "not included";
 }

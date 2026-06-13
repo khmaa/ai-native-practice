@@ -2,6 +2,12 @@ export type PlanRequest = {
   prompt: string;
   maxTasks: number;
   locale: "ko";
+  context: PlanContext;
+};
+
+export type PlanContext = {
+  approvedTaskTitles: string[];
+  draftTaskTitles: string[];
 };
 
 export type PlanTaskDraft = {
