@@ -8,6 +8,8 @@ export type PlanRequest = {
 export type PlanContext = {
   approvedTaskTitles: string[];
   draftTaskTitles: string[];
+  taskTitleBudget: number;
+  omittedTaskTitleCount: number;
 };
 
 export type PlanTaskDraft = {

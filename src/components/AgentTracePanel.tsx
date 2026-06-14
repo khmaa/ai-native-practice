@@ -35,6 +35,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{summarizeTitles(trace.request.context.draftTaskTitles)}</dd>
           </div>
           <div>
+            <dt>Context budget</dt>
+            <dd>{summarizeBudget(trace.request.context)}</dd>
+          </div>
+          <div>
             <dt>Response</dt>
             <dd>{trace.responseSummary}</dd>
           </div>
@@ -56,4 +60,11 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
 
 function summarizeTitles(titles: string[]) {
   return titles.length > 0 ? titles.join(" · ") : "not included";
+}
+
+function summarizeBudget(context: AgentTrace["request"]["context"]) {
+  const includedCount =
+    context.approvedTaskTitles.length + context.draftTaskTitles.length;
+
+  return `${includedCount} / ${context.taskTitleBudget} titles included · ${context.omittedTaskTitleCount} omitted`;
 }
