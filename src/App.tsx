@@ -5,6 +5,7 @@ import { PlannerStatePanel } from "./components/PlannerStatePanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { SuggestionPreview } from "./components/SuggestionPreview";
 import { completeTrace, summarizeUnknownResponse } from "./lib/agentTrace";
+import { createPlanContext } from "./lib/planContext";
 import { getPlannerStateView } from "./lib/plannerState";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
@@ -316,12 +317,5 @@ function createContractIssue(message: string): PlannerIssue {
     title: "AI 응답을 초안으로 사용할 수 없습니다.",
     message,
     recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
-  };
-}
-
-function createPlanContext(approved: ApprovedTask[], suggestions: TaskSuggestion[]) {
-  return {
-    approvedTaskTitles: approved.map((task) => task.title),
-    draftTaskTitles: suggestions.map((task) => task.title),
   };
 }
