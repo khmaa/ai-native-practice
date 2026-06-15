@@ -10,6 +10,7 @@ export type PlanContext = {
   draftTaskTitles: string[];
   taskTitleBudget: number;
   omittedTaskTitleCount: number;
+  blockedTaskTitleCount: number;
 };
 
 export type PlanTaskDraft = {

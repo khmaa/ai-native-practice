@@ -39,6 +39,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{summarizeBudget(trace.request.context)}</dd>
           </div>
           <div>
+            <dt>Context trust</dt>
+            <dd>{summarizeTrustBoundary(trace.request.context)}</dd>
+          </div>
+          <div>
             <dt>Response</dt>
             <dd>{trace.responseSummary}</dd>
           </div>
@@ -67,4 +71,8 @@ function summarizeBudget(context: AgentTrace["request"]["context"]) {
     context.approvedTaskTitles.length + context.draftTaskTitles.length;
 
   return `${includedCount} / ${context.taskTitleBudget} titles included · ${context.omittedTaskTitleCount} omitted`;
+}
+
+function summarizeTrustBoundary(context: AgentTrace["request"]["context"]) {
+  return `structured task-title data · ${context.blockedTaskTitleCount} instruction-like titles blocked`;
 }
