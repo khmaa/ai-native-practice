@@ -1,8 +1,8 @@
 import type { PlanRequest } from "../types/aiContract";
-import { createBrokenPlanResponse, createMockPlanResponse } from "./mockPlanner";
+import { createBrokenPlanResponse, createDuplicateTitlePlanResponse, createMockPlanResponse } from "./mockPlanner";
 import { wait } from "./wait";
 
-export type PlannerAgentMode = "valid" | "contract-failure";
+export type PlannerAgentMode = "valid" | "contract-failure" | "duplicate-title";
 
 export async function requestPlanDraft(
   request: PlanRequest,
@@ -13,6 +13,10 @@ export async function requestPlanDraft(
 
   if (mode === "contract-failure") {
     return createBrokenPlanResponse();
+  }
+
+  if (mode === "duplicate-title") {
+    return createDuplicateTitlePlanResponse(request.prompt, request.context);
   }
 
   return createMockPlanResponse(request.prompt, request.context);

@@ -10,6 +10,7 @@ export function SuggestionPreview({
   canRegenerate,
   onRegenerate,
   onContractFailureTest,
+  onDuplicateTitleTest,
   onDismissIssue,
   onApply,
   onSuggestionChange,
@@ -22,6 +23,7 @@ export function SuggestionPreview({
   canRegenerate: boolean;
   onRegenerate: () => void;
   onContractFailureTest: () => void;
+  onDuplicateTitleTest: () => void;
   onDismissIssue: () => void;
   onApply: () => void;
   onSuggestionChange: (id: string, patch: TaskSuggestionPatch) => void;
@@ -36,6 +38,9 @@ export function SuggestionPreview({
         <div className="panel-actions">
           <button className="secondary" type="button" disabled={isGenerating} onClick={onContractFailureTest}>
             계약 실패 테스트
+          </button>
+          <button className="secondary" type="button" disabled={isGenerating} onClick={onDuplicateTitleTest}>
+            중복 응답 테스트
           </button>
           <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
             재생성

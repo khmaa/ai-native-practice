@@ -31,6 +31,20 @@ export function createBrokenPlanResponse(): unknown {
   };
 }
 
+export function createDuplicateTitlePlanResponse(prompt: string, context: PlanContext): unknown {
+  const tasks = applyPlanContext(getTaskSeeds(prompt), context);
+  const duplicateTitle = tasks[0]?.[0] ?? "중복 작업";
+
+  return {
+    tasks: tasks.map(([title, detail, day, duration], index) => ({
+      title: index === 1 ? duplicateTitle : title,
+      detail,
+      day,
+      duration,
+    })),
+  } satisfies PlanResponse;
+}
+
 export function toTaskSuggestion({ title, detail, day, duration }: PlanTaskDraft, index: number) {
   return {
     id: crypto.randomUUID(),

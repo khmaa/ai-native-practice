@@ -16,6 +16,7 @@ export function validatePlanResponse(response: unknown): PlanValidationResult {
   }
 
   const tasks: PlanTaskDraft[] = [];
+  const seenTitles = new Set<string>();
 
   for (const [index, task] of response.tasks.entries()) {
     if (!isRecord(task)) {
@@ -39,6 +40,14 @@ export function validatePlanResponse(response: unknown): PlanValidationResult {
     if (!/^\d+m$/.test(duration.value)) {
       return invalid(`${index + 1}번째 task의 duration은 60m 같은 형식이어야 합니다.`);
     }
+
+    const normalizedTitle = title.value.toLocaleLowerCase("ko");
+
+    if (seenTitles.has(normalizedTitle)) {
+      return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`);
+    }
+
+    seenTitles.add(normalizedTitle);
 
     tasks.push({
       title: title.value,

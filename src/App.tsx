@@ -212,6 +212,55 @@ export default function App() {
     }
   }
 
+  async function testDuplicateTitleResponse() {
+    const runId = crypto.randomUUID();
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    draftBackupRef.current = suggestions;
+    runIdRef.current = runId;
+    const request = createPlanRequest(
+      lastPrompt || prompt || "중복 제목 테스트",
+      createPlanContext(approved, suggestions),
+    );
+    const nextTrace: AgentTrace = {
+      request,
+      mode: "duplicate-title",
+      startedAt: Date.now(),
+      responseSummary: "pending",
+      validationStatus: "pending",
+    };
+
+    setTrace(nextTrace);
+    setLastPrompt((current) => current || request.prompt);
+    setStatus("generating");
+    setIssue(null);
+    setStreamMessage("형식은 맞지만 중복 title이 있는 AI draft 응답을 요청하는 중...");
+    const aiResponse = await requestPlanDraft(request, "duplicate-title", abortController.signal);
+
+    if (runIdRef.current !== runId) {
+      return;
+    }
+
+    setStreamMessage("응답 구조뿐 아니라 제품 정책까지 검증하는 중...");
+    await wait(420);
+
+    const validation = validatePlanResponse(aiResponse);
+    const responseSummary = summarizeUnknownResponse(aiResponse);
+
+    if (!validation.ok) {
+      setTrace(completeTrace(nextTrace, {
+        responseSummary,
+        validationStatus: "failed",
+        validationMessage: validation.message,
+      }));
+      setStatus("error");
+      setStreamMessage("");
+      setIssue(createContractIssue(validation.message));
+      return;
+    }
+  }
+
   async function cancelGeneration() {
     if (!abortControllerRef.current) {
       return;
@@ -297,6 +346,7 @@ export default function App() {
           canRegenerate={Boolean(lastPrompt) && !isGenerating}
           onRegenerate={() => generateSuggestions(lastPrompt || prompt)}
           onContractFailureTest={testContractFailure}
+          onDuplicateTitleTest={testDuplicateTitleResponse}
           onDismissIssue={() => setIssue(null)}
           onApply={applySelectedSuggestions}
           onSuggestionChange={updateSuggestion}
