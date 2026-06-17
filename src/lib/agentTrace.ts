@@ -1,3 +1,4 @@
+import type { PlanValidationFailureCategory } from "../types/aiContract";
 import type { AgentTrace, TraceStatus } from "../types/agentTrace";
 
 export function summarizeUnknownResponse(response: unknown) {
@@ -19,10 +20,12 @@ export function completeTrace(
   {
     responseSummary,
     validationStatus,
+    validationCategory,
     validationMessage,
   }: {
     responseSummary: string;
     validationStatus: TraceStatus;
+    validationCategory?: PlanValidationFailureCategory;
     validationMessage?: string;
   },
 ): AgentTrace {
@@ -31,6 +34,7 @@ export function completeTrace(
     durationMs: Date.now() - trace.startedAt,
     responseSummary,
     validationStatus,
+    validationCategory,
     validationMessage,
   };
 }

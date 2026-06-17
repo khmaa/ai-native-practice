@@ -31,5 +31,8 @@ export type PlanValidationResult =
     }
   | {
       ok: false;
+      category: PlanValidationFailureCategory;
       message: string;
     };
+
+export type PlanValidationFailureCategory = "schema" | "semantic";

@@ -1,4 +1,4 @@
-import type { PlanResponse, PlanTaskDraft, PlanValidationResult } from "../types/aiContract";
+import type { PlanResponse, PlanTaskDraft, PlanValidationFailureCategory, PlanValidationResult } from "../types/aiContract";
 
 const allowedDays = new Set(["월", "화", "수", "목", "금", "주말"]);
 
@@ -44,7 +44,7 @@ export function validatePlanResponse(response: unknown): PlanValidationResult {
     const normalizedTitle = title.value.toLocaleLowerCase("ko");
 
     if (seenTitles.has(normalizedTitle)) {
-      return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`);
+      return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`, "semantic");
     }
 
     seenTitles.add(normalizedTitle);
@@ -74,6 +74,7 @@ function readRequiredString(
     }
   | {
       ok: false;
+      category: PlanValidationFailureCategory;
       message: string;
     } {
   const value = task[key];
@@ -92,9 +93,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function invalid(message: string) {
+function invalid(message: string, category: PlanValidationFailureCategory = "schema") {
   return {
     ok: false,
+    category,
     message,
   } as const;
 }

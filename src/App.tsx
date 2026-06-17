@@ -12,6 +12,7 @@ import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type { AgentTrace } from "./types/agentTrace";
+import type { PlanValidationResult } from "./types/aiContract";
 import type {
   ApprovedTask,
   PlannerIssue,
@@ -118,11 +119,12 @@ export default function App() {
       setTrace(completeTrace(nextTrace, {
         responseSummary,
         validationStatus: "failed",
+        validationCategory: validation.category,
         validationMessage: validation.message,
       }));
       setStatus("error");
       setStreamMessage("");
-      setIssue(createContractIssue(validation.message));
+      setIssue(createValidationIssue(validation));
       return;
     }
 
@@ -203,11 +205,12 @@ export default function App() {
       setTrace(completeTrace(nextTrace, {
         responseSummary,
         validationStatus: "failed",
+        validationCategory: validation.category,
         validationMessage: validation.message,
       }));
       setStatus("error");
       setStreamMessage("");
-      setIssue(createContractIssue(validation.message));
+      setIssue(createValidationIssue(validation));
       return;
     }
   }
@@ -252,11 +255,12 @@ export default function App() {
       setTrace(completeTrace(nextTrace, {
         responseSummary,
         validationStatus: "failed",
+        validationCategory: validation.category,
         validationMessage: validation.message,
       }));
       setStatus("error");
       setStreamMessage("");
-      setIssue(createContractIssue(validation.message));
+      setIssue(createValidationIssue(validation));
       return;
     }
   }
@@ -362,10 +366,18 @@ function isAbortError(error: unknown) {
   return error instanceof DOMException && error.name === "AbortError";
 }
 
-function createContractIssue(message: string): PlannerIssue {
+function createValidationIssue(validation: Extract<PlanValidationResult, { ok: false }>): PlannerIssue {
+  if (validation.category === "semantic") {
+    return {
+      title: "AI 초안이 제품 기준을 통과하지 못했습니다.",
+      message: validation.message,
+      recovery: "응답 구조는 맞지만 검토 가능한 계획으로 쓰기 어려워 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
+    };
+  }
+
   return {
-    title: "AI 응답을 초안으로 사용할 수 없습니다.",
-    message,
+    title: "AI 응답 구조가 계약과 다릅니다.",
+    message: validation.message,
     recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
   };
 }
