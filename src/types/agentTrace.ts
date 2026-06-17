@@ -1,4 +1,5 @@
 import type { PlanRequest } from "./aiContract";
+import type { PlanValidationFailureCategory } from "./aiContract";
 
 export type TraceStatus = "pending" | "passed" | "failed" | "cancelled";
 
@@ -9,5 +10,6 @@ export type AgentTrace = {
   durationMs?: number;
   responseSummary: string;
   validationStatus: TraceStatus;
+  validationCategory?: PlanValidationFailureCategory;
   validationMessage?: string;
 };

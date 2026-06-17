@@ -51,6 +51,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{trace.validationMessage ?? trace.validationStatus}</dd>
           </div>
           <div>
+            <dt>Validation kind</dt>
+            <dd>{trace.validationCategory ?? "not classified"}</dd>
+          </div>
+          <div>
             <dt>Latency</dt>
             <dd>{trace.durationMs === undefined ? "pending" : `${trace.durationMs}ms`}</dd>
           </div>
