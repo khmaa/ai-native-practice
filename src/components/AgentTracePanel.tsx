@@ -43,6 +43,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{summarizeTrustBoundary(trace.request.context)}</dd>
           </div>
           <div>
+            <dt>Feedback</dt>
+            <dd>{summarizeFeedback(trace.request.feedback)}</dd>
+          </div>
+          <div>
             <dt>Response</dt>
             <dd>{trace.responseSummary}</dd>
           </div>
@@ -79,4 +83,12 @@ function summarizeBudget(context: AgentTrace["request"]["context"]) {
 
 function summarizeTrustBoundary(context: AgentTrace["request"]["context"]) {
   return `structured task-title data · ${context.blockedTaskTitleCount} instruction-like titles blocked`;
+}
+
+function summarizeFeedback(feedback: AgentTrace["request"]["feedback"]) {
+  if (!feedback) {
+    return "not included";
+  }
+
+  return `${feedback.validationCategory} · ${feedback.validationMessage}`;
 }

@@ -22,12 +22,17 @@ export async function requestPlanDraft(
   return createMockPlanResponse(request.prompt, request.context);
 }
 
-export function createPlanRequest(prompt: string, context: PlanRequest["context"]): PlanRequest {
+export function createPlanRequest(
+  prompt: string,
+  context: PlanRequest["context"],
+  feedback?: PlanRequest["feedback"],
+): PlanRequest {
   return {
     prompt,
     maxTasks: 5,
     locale: "ko",
     context,
+    feedback,
   };
 }
 
