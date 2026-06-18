@@ -12,7 +12,7 @@ import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type { AgentTrace } from "./types/agentTrace";
-import type { PlanValidationResult } from "./types/aiContract";
+import type { PlanFeedback, PlanValidationResult } from "./types/aiContract";
 import type {
   ApprovedTask,
   PlannerIssue,
@@ -31,6 +31,7 @@ export default function App() {
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
   const [trace, setTrace] = useState<AgentTrace | null>(null);
+  const [retryFeedback, setRetryFeedback] = useState<PlanFeedback | null>(null);
   const runIdRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
@@ -56,7 +57,11 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
-    const request = createPlanRequest(trimmed, createPlanContext(approved, suggestions));
+    const request = createPlanRequest(
+      trimmed,
+      createPlanContext(approved, suggestions),
+      retryFeedback ?? undefined,
+    );
     const nextTrace: AgentTrace = {
       request,
       mode: "valid",
@@ -124,6 +129,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
+      setRetryFeedback(createRetryFeedback(validation));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -161,6 +167,7 @@ export default function App() {
 
     setStatus("ready");
     setStreamMessage("");
+    setRetryFeedback(null);
     abortControllerRef.current = null;
     draftBackupRef.current = null;
   }
@@ -210,6 +217,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
+      setRetryFeedback(createRetryFeedback(validation));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -260,6 +268,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
+      setRetryFeedback(createRetryFeedback(validation));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -371,13 +380,20 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
     return {
       title: "AI 초안이 제품 기준을 통과하지 못했습니다.",
       message: validation.message,
-      recovery: "응답 구조는 맞지만 검토 가능한 계획으로 쓰기 어려워 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
+      recovery: "응답 구조는 맞지만 검토 가능한 계획으로 쓰기 어려워 앱 상태로 반영하지 않았습니다. 다시 생성하면 이 실패 이유를 feedback으로 함께 전달합니다.",
     };
   }
 
   return {
     title: "AI 응답 구조가 계약과 다릅니다.",
     message: validation.message,
-    recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하거나 요청을 더 구체적으로 바꿔보세요.",
+    recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하면 이 실패 이유를 feedback으로 함께 전달합니다.",
+  };
+}
+
+function createRetryFeedback(validation: Extract<PlanValidationResult, { ok: false }>): PlanFeedback {
+  return {
+    validationCategory: validation.category,
+    validationMessage: validation.message,
   };
 }

@@ -3,6 +3,7 @@ export type PlanRequest = {
   maxTasks: number;
   locale: "ko";
   context: PlanContext;
+  feedback?: PlanFeedback;
 };
 
 export type PlanContext = {
@@ -36,3 +37,8 @@ export type PlanValidationResult =
     };
 
 export type PlanValidationFailureCategory = "schema" | "semantic";
+
+export type PlanFeedback = {
+  validationCategory: PlanValidationFailureCategory;
+  validationMessage: string;
+};
