@@ -90,5 +90,9 @@ function summarizeFeedback(feedback: AgentTrace["request"]["feedback"]) {
     return "not included";
   }
 
-  return `${feedback.validationCategory} · ${feedback.validationMessage}`;
+  return [
+    feedback.validationCategory,
+    feedback.validationMessage,
+    feedback.userNote ? `user: ${feedback.userNote}` : undefined,
+  ].filter(Boolean).join(" · ");
 }

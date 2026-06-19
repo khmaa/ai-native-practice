@@ -39,6 +39,7 @@ export type PlanValidationResult =
 export type PlanValidationFailureCategory = "schema" | "semantic";
 
 export type PlanFeedback = {
-  validationCategory: PlanValidationFailureCategory;
-  validationMessage: string;
+  validationCategory?: PlanValidationFailureCategory;
+  validationMessage?: string;
+  userNote?: string;
 };
