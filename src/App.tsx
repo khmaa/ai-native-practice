@@ -23,6 +23,7 @@ import type {
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
+  const [feedbackNote, setFeedbackNote] = useState("");
   const [lastPrompt, setLastPrompt] = useState("");
   const [status, setStatus] = useState<PlannerStatus>("idle");
   const [streamMessage, setStreamMessage] = useState("");
@@ -60,7 +61,7 @@ export default function App() {
     const request = createPlanRequest(
       trimmed,
       createPlanContext(approved, suggestions),
-      retryFeedback ?? undefined,
+      createPlanFeedback(retryFeedback, feedbackNote),
     );
     const nextTrace: AgentTrace = {
       request,
@@ -168,6 +169,7 @@ export default function App() {
     setStatus("ready");
     setStreamMessage("");
     setRetryFeedback(null);
+    setFeedbackNote("");
     abortControllerRef.current = null;
     draftBackupRef.current = null;
   }
@@ -339,8 +341,10 @@ export default function App() {
 
         <PromptComposer
           prompt={prompt}
+          feedbackNote={feedbackNote}
           isGenerating={isGenerating}
           onPromptChange={setPrompt}
+          onFeedbackNoteChange={setFeedbackNote}
           onSample={() => setPrompt(getRandomSamplePrompt())}
           onGenerate={() => generateSuggestions(prompt)}
           onCancel={cancelGeneration}
@@ -396,4 +400,17 @@ function createRetryFeedback(validation: Extract<PlanValidationResult, { ok: fal
     validationCategory: validation.category,
     validationMessage: validation.message,
   };
+}
+
+function createPlanFeedback(retryFeedback: PlanFeedback | null, feedbackNote: string) {
+  const trimmedNote = feedbackNote.trim().slice(0, 160);
+
+  if (!retryFeedback && !trimmedNote) {
+    return undefined;
+  }
+
+  return {
+    ...retryFeedback,
+    ...(trimmedNote ? { userNote: trimmedNote } : {}),
+  } satisfies PlanFeedback;
 }
