@@ -12,7 +12,7 @@ import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type { AgentTrace } from "./types/agentTrace";
-import type { PlanFeedback, PlanValidationResult } from "./types/aiContract";
+import type { PlanFeedback, PlanRetryFeedback, PlanValidationResult } from "./types/aiContract";
 import type {
   ApprovedTask,
   PlannerIssue,
@@ -32,7 +32,7 @@ export default function App() {
   const [approved, setApproved] = useState<ApprovedTask[]>([]);
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
   const [trace, setTrace] = useState<AgentTrace | null>(null);
-  const [retryFeedback, setRetryFeedback] = useState<PlanFeedback | null>(null);
+  const [retryFeedback, setRetryFeedback] = useState<PlanRetryFeedback | null>(null);
   const runIdRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
@@ -61,7 +61,7 @@ export default function App() {
     const request = createPlanRequest(
       trimmed,
       createPlanContext(approved, suggestions),
-      createPlanFeedback(retryFeedback, feedbackNote),
+      createPlanFeedback(retryFeedback, feedbackNote, trimmed),
     );
     const nextTrace: AgentTrace = {
       request,
@@ -130,7 +130,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
-      setRetryFeedback(createRetryFeedback(validation));
+      setRetryFeedback(createRetryFeedback(validation, request.prompt));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -219,7 +219,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
-      setRetryFeedback(createRetryFeedback(validation));
+      setRetryFeedback(createRetryFeedback(validation, request.prompt));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -270,7 +270,7 @@ export default function App() {
       }));
       setStatus("error");
       setStreamMessage("");
-      setRetryFeedback(createRetryFeedback(validation));
+      setRetryFeedback(createRetryFeedback(validation, request.prompt));
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -384,33 +384,49 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
     return {
       title: "AI 초안이 제품 기준을 통과하지 못했습니다.",
       message: validation.message,
-      recovery: "응답 구조는 맞지만 검토 가능한 계획으로 쓰기 어려워 앱 상태로 반영하지 않았습니다. 다시 생성하면 이 실패 이유를 feedback으로 함께 전달합니다.",
+      recovery: "응답 구조는 맞지만 검토 가능한 계획으로 쓰기 어려워 앱 상태로 반영하지 않았습니다. 같은 요청을 다시 생성할 때만 이 실패 이유를 feedback으로 전달합니다.",
     };
   }
 
   return {
     title: "AI 응답 구조가 계약과 다릅니다.",
     message: validation.message,
-    recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 다시 생성하면 이 실패 이유를 feedback으로 함께 전달합니다.",
+    recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 같은 요청을 다시 생성할 때만 이 실패 이유를 feedback으로 전달합니다.",
   };
 }
 
-function createRetryFeedback(validation: Extract<PlanValidationResult, { ok: false }>): PlanFeedback {
+function createRetryFeedback(
+  validation: Extract<PlanValidationResult, { ok: false }>,
+  sourcePrompt: string,
+): PlanRetryFeedback {
   return {
-    validationCategory: validation.category,
-    validationMessage: validation.message,
+    sourcePrompt: normalizePrompt(sourcePrompt),
+    feedback: {
+      validationCategory: validation.category,
+      validationMessage: validation.message,
+    },
   };
 }
 
-function createPlanFeedback(retryFeedback: PlanFeedback | null, feedbackNote: string) {
+function createPlanFeedback(
+  retryFeedback: PlanRetryFeedback | null,
+  feedbackNote: string,
+  prompt: string,
+) {
   const trimmedNote = feedbackNote.trim().slice(0, 160);
+  const validationFeedback =
+    retryFeedback?.sourcePrompt === normalizePrompt(prompt) ? retryFeedback.feedback : undefined;
 
-  if (!retryFeedback && !trimmedNote) {
+  if (!validationFeedback && !trimmedNote) {
     return undefined;
   }
 
   return {
-    ...retryFeedback,
+    ...validationFeedback,
     ...(trimmedNote ? { userNote: trimmedNote } : {}),
   } satisfies PlanFeedback;
+}
+
+function normalizePrompt(prompt: string) {
+  return prompt.trim().replace(/\s+/g, " ");
 }

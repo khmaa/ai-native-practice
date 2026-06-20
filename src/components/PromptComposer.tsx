@@ -37,6 +37,7 @@ export function PromptComposer({
         onChange={(event) => onFeedbackNoteChange(event.target.value)}
       />
       <p className="field-help">선택 사항 · 최대 160자 · 다음 AI 요청에만 feedback으로 전달됩니다.</p>
+      <p className="field-help">검증 오류 feedback은 같은 planning request를 재생성할 때만 전달됩니다.</p>
       <div className="composer-actions">
         <button className="secondary" type="button" disabled={isGenerating} onClick={onSample}>
           샘플

@@ -43,3 +43,8 @@ export type PlanFeedback = {
   validationMessage?: string;
   userNote?: string;
 };
+
+export type PlanRetryFeedback = {
+  sourcePrompt: string;
+  feedback: PlanFeedback;
+};
