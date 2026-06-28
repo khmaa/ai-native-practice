@@ -47,6 +47,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{summarizeFeedback(trace.request.feedback)}</dd>
           </div>
           <div>
+            <dt>Feedback decision</dt>
+            <dd>{summarizeFeedbackDecision(trace.feedbackDecision)}</dd>
+          </div>
+          <div>
             <dt>Response</dt>
             <dd>{trace.responseSummary}</dd>
           </div>
@@ -95,4 +99,16 @@ function summarizeFeedback(feedback: AgentTrace["request"]["feedback"]) {
     feedback.validationMessage,
     feedback.userNote ? `user: ${feedback.userNote}` : undefined,
   ].filter(Boolean).join(" · ");
+}
+
+function summarizeFeedbackDecision(decision: AgentTrace["feedbackDecision"]) {
+  if (!decision) {
+    return "not tracked for this request";
+  }
+
+  return [
+    `validation: ${decision.validationFeedback}`,
+    `user note: ${decision.userNote}`,
+    decision.reason,
+  ].join(" · ");
 }
