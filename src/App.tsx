@@ -11,7 +11,7 @@ import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mock
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
-import type { AgentTrace } from "./types/agentTrace";
+import type { AgentTrace, FeedbackDecision } from "./types/agentTrace";
 import type { PlanFeedback, PlanRetryFeedback, PlanValidationResult } from "./types/aiContract";
 import type {
   ApprovedTask,
@@ -58,15 +58,17 @@ export default function App() {
     abortControllerRef.current = abortController;
     draftBackupRef.current = suggestions;
     runIdRef.current = runId;
+    const planFeedback = createPlanFeedback(retryFeedback, feedbackNote, trimmed);
     const request = createPlanRequest(
       trimmed,
       createPlanContext(approved, suggestions),
-      createPlanFeedback(retryFeedback, feedbackNote, trimmed),
+      planFeedback.feedback,
     );
     const nextTrace: AgentTrace = {
       request,
       mode: "valid",
       startedAt: Date.now(),
+      feedbackDecision: planFeedback.decision,
       responseSummary: "pending",
       validationStatus: "pending",
     };
@@ -414,19 +416,74 @@ function createPlanFeedback(
   prompt: string,
 ) {
   const trimmedNote = feedbackNote.trim().slice(0, 160);
+  const normalizedPrompt = normalizePrompt(prompt);
   const validationFeedback =
-    retryFeedback?.sourcePrompt === normalizePrompt(prompt) ? retryFeedback.feedback : undefined;
+    retryFeedback?.sourcePrompt === normalizedPrompt ? retryFeedback.feedback : undefined;
+  const validationFeedbackDecision = getValidationFeedbackDecision(retryFeedback, normalizedPrompt);
+  const userNoteDecision: FeedbackDecision["userNote"] = trimmedNote ? "included" : "none";
 
   if (!validationFeedback && !trimmedNote) {
-    return undefined;
+    return {
+      feedback: undefined,
+      decision: {
+        validationFeedback: validationFeedbackDecision,
+        userNote: userNoteDecision,
+        reason: createFeedbackDecisionReason(validationFeedbackDecision, userNoteDecision),
+      },
+    };
   }
 
   return {
-    ...validationFeedback,
-    ...(trimmedNote ? { userNote: trimmedNote } : {}),
-  } satisfies PlanFeedback;
+    feedback: {
+      ...validationFeedback,
+      ...(trimmedNote ? { userNote: trimmedNote } : {}),
+    } satisfies PlanFeedback,
+    decision: {
+      validationFeedback: validationFeedbackDecision,
+      userNote: userNoteDecision,
+      reason: createFeedbackDecisionReason(validationFeedbackDecision, userNoteDecision),
+    },
+  };
 }
 
 function normalizePrompt(prompt: string) {
   return prompt.trim().replace(/\s+/g, " ");
+}
+
+function getValidationFeedbackDecision(
+  retryFeedback: PlanRetryFeedback | null,
+  normalizedPrompt: string,
+): FeedbackDecision["validationFeedback"] {
+  if (!retryFeedback) {
+    return "none";
+  }
+
+  return retryFeedback.sourcePrompt === normalizedPrompt ? "included" : "excluded-stale";
+}
+
+function createFeedbackDecisionReason(
+  validationFeedback: "included" | "excluded-stale" | "none",
+  userNote: "included" | "none",
+) {
+  if (validationFeedback === "included" && userNote === "included") {
+    return "same request retry plus explicit user guidance";
+  }
+
+  if (validationFeedback === "included") {
+    return "same request retry";
+  }
+
+  if (validationFeedback === "excluded-stale" && userNote === "included") {
+    return "stale validation feedback blocked; user note still applies";
+  }
+
+  if (validationFeedback === "excluded-stale") {
+    return "stale validation feedback blocked";
+  }
+
+  if (userNote === "included") {
+    return "explicit user guidance";
+  }
+
+  return "no feedback context selected";
 }
