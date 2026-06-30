@@ -15,6 +15,7 @@ import type { AgentTrace, FeedbackDecision } from "./types/agentTrace";
 import type { PlanFeedback, PlanRetryFeedback, PlanValidationResult } from "./types/aiContract";
 import type {
   ApprovedTask,
+  ApprovedTaskSource,
   PlannerIssue,
   PlannerStatus,
   TaskSuggestion,
@@ -308,12 +309,15 @@ export default function App() {
       return;
     }
 
+    const source = createApprovedTaskSource(trace);
+
     setHistory((current) => [...current, approved]);
     setApproved((current) => [
       ...current,
       ...selected.map(({ selected: _selected, ...item }) => ({
         ...item,
         id: crypto.randomUUID(),
+        source,
       })),
     ]);
     setSuggestions((current) => current.map((item) => ({ ...item, selected: false })));
@@ -486,4 +490,13 @@ function createFeedbackDecisionReason(
   }
 
   return "no feedback context selected";
+}
+
+function createApprovedTaskSource(trace: AgentTrace | null): ApprovedTaskSource {
+  return {
+    kind: "ai-draft",
+    prompt: trace?.request.prompt ?? "unknown request",
+    traceMode: trace?.mode ?? "unknown",
+    approvedAt: new Date().toISOString(),
+  };
 }
