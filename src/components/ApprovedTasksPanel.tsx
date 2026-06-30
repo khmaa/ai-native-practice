@@ -31,9 +31,26 @@ export function ApprovedTasksPanel({
             <span>
               {item.day} · {item.duration} · {item.detail}
             </span>
+            <small>{summarizeSource(item.source)}</small>
           </li>
         ))}
       </ol>
     </aside>
   );
+}
+
+function summarizeSource(source: ApprovedTask["source"]) {
+  return [
+    "승인된 AI draft",
+    `mode: ${source.traceMode}`,
+    `prompt: ${source.prompt}`,
+    `approved: ${formatApprovedAt(source.approvedAt)}`,
+  ].join(" · ");
+}
+
+function formatApprovedAt(approvedAt: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(approvedAt));
 }

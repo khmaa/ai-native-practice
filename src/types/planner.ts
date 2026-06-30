@@ -9,7 +9,16 @@ export type TaskSuggestion = {
   selected: boolean;
 };
 
-export type ApprovedTask = Omit<TaskSuggestion, "selected">;
+export type ApprovedTaskSource = {
+  kind: "ai-draft";
+  prompt: string;
+  traceMode: "valid" | "contract-failure" | "duplicate-title" | "unknown";
+  approvedAt: string;
+};
+
+export type ApprovedTask = Omit<TaskSuggestion, "selected"> & {
+  source: ApprovedTaskSource;
+};
 
 export type TaskSuggestionPatch = Partial<TaskSuggestion>;
 

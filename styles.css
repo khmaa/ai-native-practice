@@ -456,6 +456,15 @@ textarea:focus {
   font-size: 13px;
 }
 
+.approved-list small {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
