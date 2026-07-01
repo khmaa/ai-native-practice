@@ -83,7 +83,9 @@ export function SuggestionPreview({
       </div>
 
       <div className="apply-row">
-        <span className="selection-count">{selectedCount} selected</span>
+        <span className="selection-count">
+          {selectedCount} selected · apply guard checks edited values
+        </span>
         <button type="button" disabled={selectedCount === 0 || isGenerating} onClick={onApply}>
           선택 항목 적용
         </button>

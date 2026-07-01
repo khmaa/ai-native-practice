@@ -9,6 +9,7 @@ import { createPlanContext } from "./lib/planContext";
 import { getPlannerStateView } from "./lib/plannerState";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
+import { validateApplySelection } from "./lib/validateApplySelection";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
 import type { AgentTrace, FeedbackDecision } from "./types/agentTrace";
@@ -309,6 +310,13 @@ export default function App() {
       return;
     }
 
+    const applyGuard = validateApplySelection(selected);
+
+    if (!applyGuard.ok) {
+      setIssue(createApplyGuardIssue(applyGuard.message));
+      return;
+    }
+
     const source = createApprovedTaskSource(trace);
 
     setHistory((current) => [...current, approved]);
@@ -317,9 +325,14 @@ export default function App() {
       ...selected.map(({ selected: _selected, ...item }) => ({
         ...item,
         id: crypto.randomUUID(),
+        title: item.title.trim(),
+        detail: item.detail.trim(),
+        day: item.day.trim(),
+        duration: item.duration.trim(),
         source,
       })),
     ]);
+    setIssue(null);
     setSuggestions((current) => current.map((item) => ({ ...item, selected: false })));
   }
 
@@ -398,6 +411,14 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
     title: "AI 응답 구조가 계약과 다릅니다.",
     message: validation.message,
     recovery: "응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다. 같은 요청을 다시 생성할 때만 이 실패 이유를 feedback으로 전달합니다.",
+  };
+}
+
+function createApplyGuardIssue(message: string): PlannerIssue {
+  return {
+    title: "선택 항목이 적용 기준을 통과하지 못했습니다.",
+    message,
+    recovery: "AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다. 값을 고친 다음 선택 항목 적용을 다시 눌러주세요.",
   };
 }
 
