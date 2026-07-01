@@ -27,3 +27,12 @@ export type PlannerIssue = {
   message: string;
   recovery: string;
 };
+
+export type ApplyGuardResult =
+  | {
+      ok: true;
+    }
+  | {
+      ok: false;
+      message: string;
+    };
