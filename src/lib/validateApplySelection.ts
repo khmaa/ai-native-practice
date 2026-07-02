@@ -1,6 +1,5 @@
 import type { ApplyGuardResult, TaskSuggestion } from "../types/planner";
-
-const allowedDays = new Set(["월", "화", "수", "목", "금", "주말"]);
+import { formatAllowedPlanDays, isAllowedPlanDay, isPlanDuration, normalizeTaskTitle } from "./plannerPolicy";
 
 export function validateApplySelection(tasks: TaskSuggestion[]): ApplyGuardResult {
   if (tasks.length === 0) {
@@ -24,15 +23,15 @@ export function validateApplySelection(tasks: TaskSuggestion[]): ApplyGuardResul
       return blocked(`${taskLabel}의 detail은 비어 있을 수 없습니다.`);
     }
 
-    if (!allowedDays.has(day)) {
-      return blocked(`${taskLabel}의 day는 월/화/수/목/금/주말 중 하나여야 합니다.`);
+    if (!isAllowedPlanDay(day)) {
+      return blocked(`${taskLabel}의 day는 ${formatAllowedPlanDays()} 중 하나여야 합니다.`);
     }
 
-    if (!/^\d+m$/.test(duration)) {
+    if (!isPlanDuration(duration)) {
       return blocked(`${taskLabel}의 duration은 60m 같은 형식이어야 합니다.`);
     }
 
-    const normalizedTitle = title.toLocaleLowerCase("ko");
+    const normalizedTitle = normalizeTaskTitle(title);
 
     if (seenTitles.has(normalizedTitle)) {
       return blocked(`${taskLabel}의 title이 다른 선택 항목과 중복됩니다.`);

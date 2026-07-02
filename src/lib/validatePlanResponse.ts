@@ -1,6 +1,5 @@
 import type { PlanResponse, PlanTaskDraft, PlanValidationFailureCategory, PlanValidationResult } from "../types/aiContract";
-
-const allowedDays = new Set(["월", "화", "수", "목", "금", "주말"]);
+import { formatAllowedPlanDays, isAllowedPlanDay, isPlanDuration, normalizeTaskTitle } from "./plannerPolicy";
 
 export function validatePlanResponse(response: unknown): PlanValidationResult {
   if (!isRecord(response)) {
@@ -33,15 +32,15 @@ export function validatePlanResponse(response: unknown): PlanValidationResult {
     if (!day.ok) return day;
     if (!duration.ok) return duration;
 
-    if (!allowedDays.has(day.value)) {
-      return invalid(`${index + 1}번째 task의 day는 월/화/수/목/금/주말 중 하나여야 합니다.`);
+    if (!isAllowedPlanDay(day.value)) {
+      return invalid(`${index + 1}번째 task의 day는 ${formatAllowedPlanDays()} 중 하나여야 합니다.`);
     }
 
-    if (!/^\d+m$/.test(duration.value)) {
+    if (!isPlanDuration(duration.value)) {
       return invalid(`${index + 1}번째 task의 duration은 60m 같은 형식이어야 합니다.`);
     }
 
-    const normalizedTitle = title.value.toLocaleLowerCase("ko");
+    const normalizedTitle = normalizeTaskTitle(title.value);
 
     if (seenTitles.has(normalizedTitle)) {
       return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`, "semantic");
