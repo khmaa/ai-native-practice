@@ -1,4 +1,5 @@
 import type { PlanContext, PlanResponse, PlanTaskDraft } from "../types/aiContract";
+import { normalizeTaskTitle } from "./plannerPolicy";
 
 export const samplePrompts = [
   "다음 주 발표 준비 일정을 현실적으로 쪼개줘",
@@ -65,12 +66,12 @@ function applyPlanContext(
   context: PlanContext,
 ) {
   const existingTitles = new Set([
-    ...context.approvedTaskTitles.map(normalizeTitle),
-    ...context.draftTaskTitles.map(normalizeTitle),
+    ...context.approvedTaskTitles.map(normalizeTaskTitle),
+    ...context.draftTaskTitles.map(normalizeTaskTitle),
   ]);
 
   return seeds.map(([title, detail, day, duration]) => {
-    if (!existingTitles.has(normalizeTitle(title))) {
+    if (!existingTitles.has(normalizeTaskTitle(title))) {
       return [title, detail, day, duration] as const;
     }
 
@@ -81,10 +82,6 @@ function applyPlanContext(
       duration,
     ] as const;
   });
-}
-
-function normalizeTitle(title: string) {
-  return title.trim().toLocaleLowerCase("ko");
 }
 
 function getTaskSeeds(prompt: string): [title: string, detail: string, day: string, duration: string][] {

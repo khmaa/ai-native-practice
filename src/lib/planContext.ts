@@ -1,5 +1,6 @@
 import type { PlanContext } from "../types/aiContract";
 import type { ApprovedTask, TaskSuggestion } from "../types/planner";
+import { normalizeTaskTitle } from "./plannerPolicy";
 
 export const taskTitleContextBudget = 5;
 
@@ -35,7 +36,7 @@ function collectUniqueTitles(
 
   for (const task of tasks) {
     const title = task.title.trim();
-    const normalizedTitle = title.toLocaleLowerCase("ko");
+    const normalizedTitle = normalizeTaskTitle(title);
 
     if (looksLikeInstruction(normalizedTitle)) {
       safetyReport.blockedTaskTitleCount += 1;
