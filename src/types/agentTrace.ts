@@ -13,6 +13,7 @@ export type AgentTrace = {
   request: PlanRequest;
   mode: "valid" | "contract-failure" | "duplicate-title";
   startedAt: number;
+  policyDescription?: string;
   feedbackDecision?: FeedbackDecision;
   durationMs?: number;
   responseSummary: string;

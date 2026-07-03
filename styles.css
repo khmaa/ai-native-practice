@@ -253,6 +253,18 @@ textarea:focus {
   font-weight: 700;
 }
 
+.policy-note {
+  margin: 8px 0 16px;
+  border: 1px solid rgba(29, 122, 140, 0.16);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--accent);
+  background: rgba(29, 122, 140, 0.06);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .composer-actions,
 .apply-row {
   display: flex;
