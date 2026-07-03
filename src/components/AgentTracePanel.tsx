@@ -23,6 +23,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             </dd>
           </div>
           <div>
+            <dt>Policy</dt>
+            <dd>{trace.policyDescription ?? "not tracked"}</dd>
+          </div>
+          <div>
             <dt>Prompt</dt>
             <dd>{trace.request.prompt}</dd>
           </div>

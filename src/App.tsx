@@ -7,6 +7,7 @@ import { SuggestionPreview } from "./components/SuggestionPreview";
 import { completeTrace, summarizeUnknownResponse } from "./lib/agentTrace";
 import { createPlanContext } from "./lib/planContext";
 import { getPlannerStateView } from "./lib/plannerState";
+import { describePlannerPolicy } from "./lib/plannerPolicy";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validateApplySelection } from "./lib/validateApplySelection";
@@ -40,6 +41,7 @@ export default function App() {
   const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
 
   const isGenerating = status === "generating";
+  const plannerPolicyDescription = describePlannerPolicy();
   const selectedCount = useMemo(() => suggestions.filter((item) => item.selected).length, [suggestions]);
   const plannerStateView = getPlannerStateView({
     status,
@@ -70,6 +72,7 @@ export default function App() {
       request,
       mode: "valid",
       startedAt: Date.now(),
+      policyDescription: plannerPolicyDescription,
       feedbackDecision: planFeedback.decision,
       responseSummary: "pending",
       validationStatus: "pending",
@@ -193,6 +196,7 @@ export default function App() {
       request,
       mode: "contract-failure",
       startedAt: Date.now(),
+      policyDescription: plannerPolicyDescription,
       responseSummary: "pending",
       validationStatus: "pending",
     };
@@ -244,6 +248,7 @@ export default function App() {
       request,
       mode: "duplicate-title",
       startedAt: Date.now(),
+      policyDescription: plannerPolicyDescription,
       responseSummary: "pending",
       validationStatus: "pending",
     };
@@ -361,6 +366,7 @@ export default function App() {
         <PromptComposer
           prompt={prompt}
           feedbackNote={feedbackNote}
+          policyDescription={plannerPolicyDescription}
           isGenerating={isGenerating}
           onPromptChange={setPrompt}
           onFeedbackNoteChange={setFeedbackNote}

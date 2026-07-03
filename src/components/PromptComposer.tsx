@@ -1,6 +1,7 @@
 export function PromptComposer({
   prompt,
   feedbackNote,
+  policyDescription,
   isGenerating,
   onPromptChange,
   onFeedbackNoteChange,
@@ -10,6 +11,7 @@ export function PromptComposer({
 }: {
   prompt: string;
   feedbackNote: string;
+  policyDescription: string;
   isGenerating: boolean;
   onPromptChange: (prompt: string) => void;
   onFeedbackNoteChange: (feedbackNote: string) => void;
@@ -27,6 +29,9 @@ export function PromptComposer({
         placeholder="예: 다음 주 발표 준비 일정을 현실적으로 쪼개줘"
         onChange={(event) => onPromptChange(event.target.value)}
       />
+      <p className="policy-note">
+        Planner policy · {policyDescription}
+      </p>
       <label htmlFor="feedback-note">Feedback for next generation</label>
       <textarea
         id="feedback-note"

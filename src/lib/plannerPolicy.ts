@@ -17,3 +17,11 @@ export function isPlanDuration(duration: string) {
 export function normalizeTaskTitle(title: string) {
   return title.trim().toLocaleLowerCase("ko");
 }
+
+export function describePlannerPolicy() {
+  return [
+    `day: ${formatAllowedPlanDays()}`,
+    "duration: minutes ending with m, like 60m",
+    "title: unique after trim + ko lowercase",
+  ].join(" · ");
+}
