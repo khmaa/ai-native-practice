@@ -1,4 +1,5 @@
 export const allowedPlanDays = ["월", "화", "수", "목", "금", "주말"] as const;
+export const plannerPolicyVersion = "planner-policy-v1";
 
 const allowedPlanDaySet = new Set<string>(allowedPlanDays);
 
@@ -20,8 +21,16 @@ export function normalizeTaskTitle(title: string) {
 
 export function describePlannerPolicy() {
   return [
+    `version: ${plannerPolicyVersion}`,
     `day: ${formatAllowedPlanDays()}`,
     "duration: minutes ending with m, like 60m",
     "title: unique after trim + ko lowercase",
   ].join(" · ");
+}
+
+export function createPlannerPolicySnapshot() {
+  return {
+    version: plannerPolicyVersion,
+    description: describePlannerPolicy(),
+  };
 }
