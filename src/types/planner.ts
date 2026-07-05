@@ -1,3 +1,5 @@
+import type { PlannerPolicyRuleId } from "./plannerPolicy";
+
 export type PlannerStatus = "idle" | "generating" | "ready" | "error";
 
 export type TaskSuggestion = {
@@ -34,5 +36,6 @@ export type ApplyGuardResult =
     }
   | {
       ok: false;
+      ruleId: PlannerPolicyRuleId;
       message: string;
     };
