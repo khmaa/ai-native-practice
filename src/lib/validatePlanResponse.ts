@@ -1,17 +1,18 @@
 import type { PlanResponse, PlanTaskDraft, PlanValidationFailureCategory, PlanValidationResult } from "../types/aiContract";
+import type { PlannerPolicyRuleId } from "../types/plannerPolicy";
 import { formatAllowedPlanDays, isAllowedPlanDay, isPlanDuration, normalizeTaskTitle } from "./plannerPolicy";
 
 export function validatePlanResponse(response: unknown): PlanValidationResult {
   if (!isRecord(response)) {
-    return invalid("AI 응답은 객체여야 합니다.");
+    return invalid("AI 응답은 객체여야 합니다.", "schema", "required-field");
   }
 
   if (!Array.isArray(response.tasks)) {
-    return invalid("AI 응답에는 tasks 배열이 필요합니다.");
+    return invalid("AI 응답에는 tasks 배열이 필요합니다.", "schema", "required-field");
   }
 
   if (response.tasks.length < 3 || response.tasks.length > 5) {
-    return invalid("tasks는 3개 이상 5개 이하여야 합니다.");
+    return invalid("tasks는 3개 이상 5개 이하여야 합니다.", "schema", "task-count");
   }
 
   const tasks: PlanTaskDraft[] = [];
@@ -33,17 +34,17 @@ export function validatePlanResponse(response: unknown): PlanValidationResult {
     if (!duration.ok) return duration;
 
     if (!isAllowedPlanDay(day.value)) {
-      return invalid(`${index + 1}번째 task의 day는 ${formatAllowedPlanDays()} 중 하나여야 합니다.`);
+      return invalid(`${index + 1}번째 task의 day는 ${formatAllowedPlanDays()} 중 하나여야 합니다.`, "schema", "allowed-day");
     }
 
     if (!isPlanDuration(duration.value)) {
-      return invalid(`${index + 1}번째 task의 duration은 60m 같은 형식이어야 합니다.`);
+      return invalid(`${index + 1}번째 task의 duration은 60m 같은 형식이어야 합니다.`, "schema", "duration-format");
     }
 
     const normalizedTitle = normalizeTaskTitle(title.value);
 
     if (seenTitles.has(normalizedTitle)) {
-      return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`, "semantic");
+      return invalid(`${index + 1}번째 task의 title이 이전 task와 중복됩니다.`, "semantic", "unique-title");
     }
 
     seenTitles.add(normalizedTitle);
@@ -74,12 +75,13 @@ function readRequiredString(
   | {
       ok: false;
       category: PlanValidationFailureCategory;
+      ruleId: PlannerPolicyRuleId;
       message: string;
     } {
   const value = task[key];
 
   if (typeof value !== "string" || value.trim().length === 0) {
-    return invalid(`${index + 1}번째 task의 ${key}는 비어 있지 않은 문자열이어야 합니다.`);
+    return invalid(`${index + 1}번째 task의 ${key}는 비어 있지 않은 문자열이어야 합니다.`, "schema", "required-field");
   }
 
   return {
@@ -92,10 +94,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function invalid(message: string, category: PlanValidationFailureCategory = "schema") {
+function invalid(
+  message: string,
+  category: PlanValidationFailureCategory = "schema",
+  ruleId: PlannerPolicyRuleId = "required-field",
+) {
   return {
     ok: false,
     category,
+    ruleId,
     message,
   } as const;
 }

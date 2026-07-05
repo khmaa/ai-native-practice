@@ -1,3 +1,5 @@
+import type { PlannerPolicyRuleId } from "./plannerPolicy";
+
 export type PlanRequest = {
   prompt: string;
   maxTasks: number;
@@ -33,6 +35,7 @@ export type PlanValidationResult =
   | {
       ok: false;
       category: PlanValidationFailureCategory;
+      ruleId: PlannerPolicyRuleId;
       message: string;
     };
 
@@ -40,6 +43,7 @@ export type PlanValidationFailureCategory = "schema" | "semantic";
 
 export type PlanFeedback = {
   validationCategory?: PlanValidationFailureCategory;
+  validationRuleId?: PlannerPolicyRuleId;
   validationMessage?: string;
   userNote?: string;
 };

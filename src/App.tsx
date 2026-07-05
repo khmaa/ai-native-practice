@@ -134,6 +134,7 @@ export default function App() {
         responseSummary,
         validationStatus: "failed",
         validationCategory: validation.category,
+        validationRuleId: validation.ruleId,
         validationMessage: validation.message,
       }));
       setStatus("error");
@@ -225,6 +226,7 @@ export default function App() {
         responseSummary,
         validationStatus: "failed",
         validationCategory: validation.category,
+        validationRuleId: validation.ruleId,
         validationMessage: validation.message,
       }));
       setStatus("error");
@@ -278,6 +280,7 @@ export default function App() {
         responseSummary,
         validationStatus: "failed",
         validationCategory: validation.category,
+        validationRuleId: validation.ruleId,
         validationMessage: validation.message,
       }));
       setStatus("error");
@@ -321,7 +324,7 @@ export default function App() {
     const applyGuard = validateApplySelection(selected);
 
     if (!applyGuard.ok) {
-      setIssue(createApplyGuardIssue(applyGuard.message));
+      setIssue(createApplyGuardIssue(applyGuard.message, applyGuard.ruleId));
       return;
     }
 
@@ -423,10 +426,10 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
   };
 }
 
-function createApplyGuardIssue(message: string): PlannerIssue {
+function createApplyGuardIssue(message: string, ruleId: string): PlannerIssue {
   return {
     title: "선택 항목이 적용 기준을 통과하지 못했습니다.",
-    message,
+    message: `${message} (rule: ${ruleId})`,
     recovery: "AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다. 값을 고친 다음 선택 항목 적용을 다시 눌러주세요.",
   };
 }
@@ -439,6 +442,7 @@ function createRetryFeedback(
     sourcePrompt: normalizePrompt(sourcePrompt),
     feedback: {
       validationCategory: validation.category,
+      validationRuleId: validation.ruleId,
       validationMessage: validation.message,
     },
   };

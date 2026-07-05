@@ -71,6 +71,10 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
             <dd>{trace.validationCategory ?? "not classified"}</dd>
           </div>
           <div>
+            <dt>Policy rule</dt>
+            <dd>{trace.validationRuleId ?? "not tracked"}</dd>
+          </div>
+          <div>
             <dt>Latency</dt>
             <dd>{trace.durationMs === undefined ? "pending" : `${trace.durationMs}ms`}</dd>
           </div>
@@ -104,6 +108,7 @@ function summarizeFeedback(feedback: AgentTrace["request"]["feedback"]) {
 
   return [
     feedback.validationCategory,
+    feedback.validationRuleId ? `rule: ${feedback.validationRuleId}` : undefined,
     feedback.validationMessage,
     feedback.userNote ? `user: ${feedback.userNote}` : undefined,
   ].filter(Boolean).join(" · ");

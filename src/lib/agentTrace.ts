@@ -1,5 +1,6 @@
 import type { PlanValidationFailureCategory } from "../types/aiContract";
 import type { AgentTrace, TraceStatus } from "../types/agentTrace";
+import type { PlannerPolicyRuleId } from "../types/plannerPolicy";
 
 export function summarizeUnknownResponse(response: unknown) {
   if (typeof response !== "object" || response === null || Array.isArray(response)) {
@@ -21,11 +22,13 @@ export function completeTrace(
     responseSummary,
     validationStatus,
     validationCategory,
+    validationRuleId,
     validationMessage,
   }: {
     responseSummary: string;
     validationStatus: TraceStatus;
     validationCategory?: PlanValidationFailureCategory;
+    validationRuleId?: PlannerPolicyRuleId;
     validationMessage?: string;
   },
 ): AgentTrace {
@@ -35,6 +38,7 @@ export function completeTrace(
     responseSummary,
     validationStatus,
     validationCategory,
+    validationRuleId,
     validationMessage,
   };
 }
