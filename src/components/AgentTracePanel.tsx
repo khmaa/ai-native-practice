@@ -1,4 +1,5 @@
 import type { AgentTrace } from "../types/agentTrace";
+import { getPlannerPolicyRule } from "../lib/plannerPolicy";
 
 export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
   return (
@@ -72,7 +73,7 @@ export function AgentTracePanel({ trace }: { trace: AgentTrace | null }) {
           </div>
           <div>
             <dt>Policy rule</dt>
-            <dd>{trace.validationRuleId ?? "not tracked"}</dd>
+            <dd>{summarizePolicyRule(trace.validationRuleId)}</dd>
           </div>
           <div>
             <dt>Latency</dt>
@@ -108,10 +109,20 @@ function summarizeFeedback(feedback: AgentTrace["request"]["feedback"]) {
 
   return [
     feedback.validationCategory,
-    feedback.validationRuleId ? `rule: ${feedback.validationRuleId}` : undefined,
+    feedback.validationRuleId ? `rule: ${summarizePolicyRule(feedback.validationRuleId)}` : undefined,
     feedback.validationMessage,
     feedback.userNote ? `user: ${feedback.userNote}` : undefined,
   ].filter(Boolean).join(" · ");
+}
+
+function summarizePolicyRule(ruleId: AgentTrace["validationRuleId"]) {
+  if (!ruleId) {
+    return "not tracked";
+  }
+
+  const rule = getPlannerPolicyRule(ruleId);
+
+  return `${rule.id} · ${rule.label}`;
 }
 
 function summarizeFeedbackDecision(decision: AgentTrace["feedbackDecision"]) {

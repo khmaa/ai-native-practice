@@ -7,7 +7,7 @@ import { SuggestionPreview } from "./components/SuggestionPreview";
 import { completeTrace, summarizeUnknownResponse } from "./lib/agentTrace";
 import { createPlanContext } from "./lib/planContext";
 import { getPlannerStateView } from "./lib/plannerState";
-import { createPlannerPolicySnapshot } from "./lib/plannerPolicy";
+import { createPlannerPolicySnapshot, getPlannerPolicyRule } from "./lib/plannerPolicy";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
 import { validateApplySelection } from "./lib/validateApplySelection";
@@ -23,6 +23,7 @@ import type {
   TaskSuggestion,
   TaskSuggestionPatch,
 } from "./types/planner";
+import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -426,11 +427,13 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
   };
 }
 
-function createApplyGuardIssue(message: string, ruleId: string): PlannerIssue {
+function createApplyGuardIssue(message: string, ruleId: PlannerPolicyRuleId): PlannerIssue {
+  const rule = getPlannerPolicyRule(ruleId);
+
   return {
     title: "선택 항목이 적용 기준을 통과하지 못했습니다.",
-    message: `${message} (rule: ${ruleId})`,
-    recovery: "AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다. 값을 고친 다음 선택 항목 적용을 다시 눌러주세요.",
+    message: `${message} (rule: ${rule.id} · ${rule.label})`,
+    recovery: `${rule.recoveryHint} AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다.`,
   };
 }
 
