@@ -413,21 +413,22 @@ function isAbortError(error: unknown) {
 
 function createValidationIssue(validation: Extract<PlanValidationResult, { ok: false }>): PlannerIssue {
   const rule = getPlannerPolicyRule(validation.ruleId);
-  const message = `${validation.message} (rule: ${rule.id} · ${rule.label})`;
   const ruleGuidance = `${rule.description} Recovery: ${rule.recoveryHint}`;
 
   if (validation.category === "semantic") {
     return {
       title: "AI 초안이 제품 기준을 통과하지 못했습니다.",
-      message,
+      message: validation.message,
       recovery: `${ruleGuidance} 같은 요청을 다시 생성할 때만 이 실패 이유를 feedback으로 전달합니다.`,
+      rule,
     };
   }
 
   return {
     title: "AI 응답 구조가 계약과 다릅니다.",
-    message,
+    message: validation.message,
     recovery: `${ruleGuidance} 응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다.`,
+    rule,
   };
 }
 
@@ -436,8 +437,9 @@ function createApplyGuardIssue(message: string, ruleId: PlannerPolicyRuleId): Pl
 
   return {
     title: "선택 항목이 적용 기준을 통과하지 못했습니다.",
-    message: `${message} (rule: ${rule.id} · ${rule.label})`,
+    message,
     recovery: `Recovery: ${rule.recoveryHint} AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다.`,
+    rule,
   };
 }
 

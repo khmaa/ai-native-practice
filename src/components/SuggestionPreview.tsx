@@ -60,6 +60,11 @@ export function SuggestionPreview({
         <div className="error-state">
           <strong>{issue.title}</strong>
           <span>{issue.message}</span>
+          {issue.rule ? (
+            <small>
+              Policy rule: {issue.rule.id} · {issue.rule.label}
+            </small>
+          ) : null}
           <p>{issue.recovery}</p>
           <div className="error-actions">
             <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>

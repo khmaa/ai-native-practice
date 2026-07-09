@@ -1,4 +1,4 @@
-import type { PlannerPolicyRuleId } from "./plannerPolicy";
+import type { PlannerPolicyRuleId, PlannerPolicyRuleMetadata } from "./plannerPolicy";
 
 export type PlannerStatus = "idle" | "generating" | "ready" | "error";
 
@@ -28,6 +28,7 @@ export type PlannerIssue = {
   title: string;
   message: string;
   recovery: string;
+  rule?: PlannerPolicyRuleMetadata;
 };
 
 export type ApplyGuardResult =
