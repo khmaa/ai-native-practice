@@ -366,8 +366,15 @@ textarea:focus {
 
 .error-state strong,
 .error-state span,
+.error-state small,
 .error-state p {
   display: block;
+}
+
+.error-state small {
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .error-state p {
