@@ -66,6 +66,7 @@ export function SuggestionPreview({
             </small>
           ) : null}
           <p>{issue.recovery}</p>
+          {issue.actionHint ? <em>{issue.actionHint}</em> : null}
           <div className="error-actions">
             <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
               다시 생성
