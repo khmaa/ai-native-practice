@@ -29,6 +29,7 @@ export type PlannerIssue = {
   message: string;
   recovery: string;
   rule?: PlannerPolicyRuleMetadata;
+  actionHint?: string;
 };
 
 export type ApplyGuardResult =

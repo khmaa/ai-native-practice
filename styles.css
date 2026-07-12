@@ -367,6 +367,7 @@ textarea:focus {
 .error-state strong,
 .error-state span,
 .error-state small,
+.error-state em,
 .error-state p {
   display: block;
 }
@@ -381,6 +382,13 @@ textarea:focus {
   margin: 0;
   color: var(--muted);
   font-weight: 600;
+}
+
+.error-state em {
+  color: var(--ink);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 800;
 }
 
 .error-actions {
