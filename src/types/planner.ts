@@ -30,6 +30,7 @@ export type PlannerIssue = {
   recovery: string;
   rule?: PlannerPolicyRuleMetadata;
   actionHint?: string;
+  recommendedAction?: "regenerate" | "edit-preview";
 };
 
 export type ApplyGuardResult =
