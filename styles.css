@@ -59,6 +59,13 @@ button:disabled {
   background: rgba(180, 63, 87, 0.07);
 }
 
+.secondary.recommended {
+  color: var(--accent);
+  border-color: rgba(29, 122, 140, 0.36);
+  background: rgba(29, 122, 140, 0.1);
+  font-weight: 800;
+}
+
 .icon-button {
   width: 40px;
   padding: 0;

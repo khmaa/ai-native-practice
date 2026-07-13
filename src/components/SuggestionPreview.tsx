@@ -67,12 +67,20 @@ export function SuggestionPreview({
           ) : null}
           <p>{issue.recovery}</p>
           {issue.actionHint ? <em>{issue.actionHint}</em> : null}
+          {issue.recommendedAction ? (
+            <small>Recommended action: {summarizeRecommendedAction(issue.recommendedAction)}</small>
+          ) : null}
           <div className="error-actions">
-            <button className="secondary" type="button" disabled={!canRegenerate} onClick={onRegenerate}>
-              다시 생성
+            <button
+              className={issue.recommendedAction === "regenerate" ? "secondary recommended" : "secondary"}
+              type="button"
+              disabled={!canRegenerate}
+              onClick={onRegenerate}
+            >
+              {issue.recommendedAction === "regenerate" ? "권장: 다시 생성" : "다시 생성"}
             </button>
             <button className="secondary" type="button" onClick={onDismissIssue}>
-              닫기
+              {issue.recommendedAction === "edit-preview" ? "Preview 수정하기" : "닫기"}
             </button>
           </div>
         </div>
@@ -98,4 +106,12 @@ export function SuggestionPreview({
       </div>
     </section>
   );
+}
+
+function summarizeRecommendedAction(action: NonNullable<PlannerIssue["recommendedAction"]>) {
+  if (action === "regenerate") {
+    return "use the regenerate button";
+  }
+
+  return "edit the preview cards, then apply again";
 }

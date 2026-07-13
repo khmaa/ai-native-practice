@@ -422,6 +422,7 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
       recovery: `${ruleGuidance} 같은 요청을 다시 생성할 때만 이 실패 이유를 feedback으로 전달합니다.`,
       rule,
       actionHint: "다시 생성해서 정책을 통과하는 AI draft를 요청하세요.",
+      recommendedAction: "regenerate",
     };
   }
 
@@ -431,6 +432,7 @@ function createValidationIssue(validation: Extract<PlanValidationResult, { ok: f
     recovery: `${ruleGuidance} 응답 계약을 통과하지 못했기 때문에 앱 상태로 반영하지 않았습니다.`,
     rule,
     actionHint: "다시 생성해서 출력 계약을 만족하는 응답을 요청하세요.",
+    recommendedAction: "regenerate",
   };
 }
 
@@ -443,6 +445,7 @@ function createApplyGuardIssue(message: string, ruleId: PlannerPolicyRuleId): Pl
     recovery: `Recovery: ${rule.recoveryHint} AI draft를 수정한 뒤에도 Apply 직전에 다시 검사합니다.`,
     rule,
     actionHint: "Preview 값을 고친 뒤 선택 항목 적용을 다시 누르세요.",
+    recommendedAction: "edit-preview",
   };
 }
 
