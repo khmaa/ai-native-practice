@@ -20,6 +20,7 @@ import type {
   ApprovedTaskSource,
   PlannerIssue,
   PlannerStatus,
+  RecoveryAttempt,
   TaskSuggestion,
   TaskSuggestionPatch,
 } from "./types/planner";
@@ -37,6 +38,7 @@ export default function App() {
   const [history, setHistory] = useState<ApprovedTask[][]>([]);
   const [trace, setTrace] = useState<AgentTrace | null>(null);
   const [retryFeedback, setRetryFeedback] = useState<PlanRetryFeedback | null>(null);
+  const [recoveryAttempt, setRecoveryAttempt] = useState<RecoveryAttempt | null>(null);
   const runIdRef = useRef("");
   const abortControllerRef = useRef<AbortController | null>(null);
   const draftBackupRef = useRef<TaskSuggestion[] | null>(null);
@@ -50,7 +52,7 @@ export default function App() {
     issue,
   });
 
-  async function generateSuggestions(sourcePrompt: string) {
+  async function generateSuggestions(sourcePrompt: string, recovery?: RecoveryAttempt) {
     const trimmed = sourcePrompt.trim();
 
     if (!trimmed) {
@@ -84,6 +86,7 @@ export default function App() {
     setLastPrompt(trimmed);
     setStatus("generating");
     setIssue(null);
+    setRecoveryAttempt(recovery ?? null);
     setStreamMessage("사용자 의도를 AI 요청 계약으로 정리하는 중...");
 
     await wait(420);
@@ -180,6 +183,12 @@ export default function App() {
     setStreamMessage("");
     setRetryFeedback(null);
     setFeedbackNote("");
+    if (recovery) {
+      setRecoveryAttempt({
+        ...recovery,
+        message: "복구 시도로 새 preview draft가 준비됐습니다. 이제 사용자가 검토하고 적용할 수 있습니다.",
+      });
+    }
     abortControllerRef.current = null;
     draftBackupRef.current = null;
   }
@@ -209,6 +218,7 @@ export default function App() {
     setLastPrompt((current) => current || "계약 실패 테스트");
     setStatus("generating");
     setIssue(null);
+    setRecoveryAttempt(null);
     setStreamMessage("깨진 AI draft 응답을 요청하는 중...");
     const aiResponse = await requestPlanDraft(request, "contract-failure", abortController.signal);
 
@@ -263,6 +273,7 @@ export default function App() {
     setLastPrompt((current) => current || request.prompt);
     setStatus("generating");
     setIssue(null);
+    setRecoveryAttempt(null);
     setStreamMessage("형식은 맞지만 중복 title이 있는 AI draft 응답을 요청하는 중...");
     const aiResponse = await requestPlanDraft(request, "duplicate-title", abortController.signal);
 
@@ -315,6 +326,22 @@ export default function App() {
     );
   }
 
+  function regenerateFromIssue() {
+    const recovery = issue
+      ? createRecoveryAttempt("regenerate", issue)
+      : undefined;
+
+    void generateSuggestions(lastPrompt || prompt, recovery);
+  }
+
+  function dismissIssue() {
+    if (issue?.recommendedAction === "edit-preview") {
+      setRecoveryAttempt(createRecoveryAttempt("edit-preview", issue));
+    }
+
+    setIssue(null);
+  }
+
   function applySelectedSuggestions() {
     const selected = suggestions.filter((item) => item.selected);
 
@@ -325,6 +352,7 @@ export default function App() {
     const applyGuard = validateApplySelection(selected);
 
     if (!applyGuard.ok) {
+      setRecoveryAttempt(null);
       setIssue(createApplyGuardIssue(applyGuard.message, applyGuard.ruleId));
       return;
     }
@@ -345,6 +373,7 @@ export default function App() {
       })),
     ]);
     setIssue(null);
+    setRecoveryAttempt(null);
     setSuggestions((current) => current.map((item) => ({ ...item, selected: false })));
   }
 
@@ -382,7 +411,7 @@ export default function App() {
           onCancel={cancelGeneration}
         />
 
-        <PlannerStatePanel stateView={plannerStateView} />
+        <PlannerStatePanel stateView={plannerStateView} recoveryAttempt={recoveryAttempt} />
 
         <AgentTracePanel trace={trace} />
 
@@ -393,10 +422,10 @@ export default function App() {
           streamMessage={streamMessage}
           issue={issue}
           canRegenerate={Boolean(lastPrompt) && !isGenerating}
-          onRegenerate={() => generateSuggestions(lastPrompt || prompt)}
+          onRegenerate={regenerateFromIssue}
           onContractFailureTest={testContractFailure}
           onDuplicateTitleTest={testDuplicateTitleResponse}
-          onDismissIssue={() => setIssue(null)}
+          onDismissIssue={dismissIssue}
           onApply={applySelectedSuggestions}
           onSuggestionChange={updateSuggestion}
         />
@@ -446,6 +475,24 @@ function createApplyGuardIssue(message: string, ruleId: PlannerPolicyRuleId): Pl
     rule,
     actionHint: "Preview 값을 고친 뒤 선택 항목 적용을 다시 누르세요.",
     recommendedAction: "edit-preview",
+  };
+}
+
+function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: PlannerIssue): RecoveryAttempt {
+  if (action === "edit-preview") {
+    return {
+      action: "edit-preview",
+      label: "Recovery attempt: edit preview",
+      message: "오류를 닫고 preview 값을 직접 수정하는 복구 흐름을 시작했습니다.",
+      sourceRuleId: issue.rule?.id,
+    };
+  }
+
+  return {
+    action: "regenerate",
+    label: "Recovery attempt: regenerate",
+    message: "실패 이유를 feedback으로 포함해 새 AI draft를 요청하는 복구 흐름을 시작했습니다.",
+    sourceRuleId: issue.rule?.id,
   };
 }
 

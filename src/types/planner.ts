@@ -24,13 +24,22 @@ export type ApprovedTask = Omit<TaskSuggestion, "selected"> & {
 
 export type TaskSuggestionPatch = Partial<TaskSuggestion>;
 
+export type RecoveryAction = "regenerate" | "edit-preview";
+
 export type PlannerIssue = {
   title: string;
   message: string;
   recovery: string;
   rule?: PlannerPolicyRuleMetadata;
   actionHint?: string;
-  recommendedAction?: "regenerate" | "edit-preview";
+  recommendedAction?: RecoveryAction;
+};
+
+export type RecoveryAttempt = {
+  action: RecoveryAction;
+  label: string;
+  message: string;
+  sourceRuleId?: PlannerPolicyRuleId;
 };
 
 export type ApplyGuardResult =
