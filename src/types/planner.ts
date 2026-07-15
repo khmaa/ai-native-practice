@@ -25,6 +25,7 @@ export type ApprovedTask = Omit<TaskSuggestion, "selected"> & {
 export type TaskSuggestionPatch = Partial<TaskSuggestion>;
 
 export type RecoveryAction = "regenerate" | "edit-preview";
+export type RecoveryAttemptStatus = "started" | "succeeded" | "failed" | "cancelled";
 
 export type PlannerIssue = {
   title: string;
@@ -37,6 +38,7 @@ export type PlannerIssue = {
 
 export type RecoveryAttempt = {
   action: RecoveryAction;
+  status: RecoveryAttemptStatus;
   label: string;
   message: string;
   sourceRuleId?: PlannerPolicyRuleId;

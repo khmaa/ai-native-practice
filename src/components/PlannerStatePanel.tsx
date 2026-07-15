@@ -18,12 +18,30 @@ export function PlannerStatePanel({
       </div>
 
       {recoveryAttempt ? (
-        <div className="recovery-attempt" aria-live="polite">
-          <strong>{recoveryAttempt.label}</strong>
+        <div className={`recovery-attempt ${recoveryAttempt.status}`} aria-live="polite">
+          <strong>
+            {recoveryAttempt.label} · {summarizeRecoveryStatus(recoveryAttempt.status)}
+          </strong>
           <span>{recoveryAttempt.message}</span>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
     </section>
   );
+}
+
+function summarizeRecoveryStatus(status: RecoveryAttempt["status"]) {
+  if (status === "started") {
+    return "started";
+  }
+
+  if (status === "succeeded") {
+    return "succeeded";
+  }
+
+  if (status === "failed") {
+    return "failed";
+  }
+
+  return "cancelled";
 }

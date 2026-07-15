@@ -144,6 +144,13 @@ export default function App() {
       setStatus("error");
       setStreamMessage("");
       setRetryFeedback(createRetryFeedback(validation, request.prompt));
+      if (recovery) {
+        setRecoveryAttempt({
+          ...recovery,
+          status: "failed",
+          message: "복구 재생성도 validation을 통과하지 못했습니다. 새 오류의 권장 행동을 다시 확인하세요.",
+        });
+      }
       setIssue(createValidationIssue(validation));
       return;
     }
@@ -186,6 +193,7 @@ export default function App() {
     if (recovery) {
       setRecoveryAttempt({
         ...recovery,
+        status: "succeeded",
         message: "복구 시도로 새 preview draft가 준비됐습니다. 이제 사용자가 검토하고 적용할 수 있습니다.",
       });
     }
@@ -314,6 +322,15 @@ export default function App() {
     setSuggestions(draftBackupRef.current ?? []);
     setStatus(draftBackupRef.current?.length ? "ready" : "idle");
     draftBackupRef.current = null;
+    setRecoveryAttempt((current) =>
+      current?.status === "started"
+        ? {
+            ...current,
+            status: "cancelled",
+            message: "복구 요청을 취소하고 마지막 유효 초안으로 돌아왔습니다.",
+          }
+        : current,
+    );
     setStreamMessage("AI 요청을 취소하고 마지막 유효 초안으로 돌아왔습니다.");
 
     await wait(650);
@@ -323,6 +340,15 @@ export default function App() {
   function updateSuggestion(id: string, patch: TaskSuggestionPatch) {
     setSuggestions((current) =>
       current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+    );
+    setRecoveryAttempt((current) =>
+      current?.action === "edit-preview" && current.status === "started"
+        ? {
+            ...current,
+            status: "succeeded",
+            message: "Preview 수정이 반영됐습니다. 이제 선택 항목 적용을 다시 시도할 수 있습니다.",
+          }
+        : current,
     );
   }
 
@@ -482,6 +508,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
   if (action === "edit-preview") {
     return {
       action: "edit-preview",
+      status: "started",
       label: "Recovery attempt: edit preview",
       message: "오류를 닫고 preview 값을 직접 수정하는 복구 흐름을 시작했습니다.",
       sourceRuleId: issue.rule?.id,
@@ -490,6 +517,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
 
   return {
     action: "regenerate",
+    status: "started",
     label: "Recovery attempt: regenerate",
     message: "실패 이유를 feedback으로 포함해 새 AI draft를 요청하는 복구 흐름을 시작했습니다.",
     sourceRuleId: issue.rule?.id,
