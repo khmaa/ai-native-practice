@@ -42,6 +42,8 @@ export type RecoveryAttempt = {
   label: string;
   message: string;
   sourceRuleId?: PlannerPolicyRuleId;
+  sourceIssueTitle: string;
+  sourceIssueMessage: string;
 };
 
 export type ApplyGuardResult =

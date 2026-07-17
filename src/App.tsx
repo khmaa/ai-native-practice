@@ -512,6 +512,8 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       label: "Recovery attempt: edit preview",
       message: "오류를 닫고 preview 값을 직접 수정하는 복구 흐름을 시작했습니다.",
       sourceRuleId: issue.rule?.id,
+      sourceIssueTitle: issue.title,
+      sourceIssueMessage: issue.message,
     };
   }
 
@@ -521,6 +523,8 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     label: "Recovery attempt: regenerate",
     message: "실패 이유를 feedback으로 포함해 새 AI draft를 요청하는 복구 흐름을 시작했습니다.",
     sourceRuleId: issue.rule?.id,
+    sourceIssueTitle: issue.title,
+    sourceIssueMessage: issue.message,
   };
 }
 
