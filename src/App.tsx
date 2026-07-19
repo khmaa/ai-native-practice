@@ -514,6 +514,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceRuleId: issue.rule?.id,
       sourceIssueTitle: issue.title,
       sourceIssueMessage: issue.message,
+      sourceIssueSummary: summarizeRecoverySource(issue.message),
     };
   }
 
@@ -525,7 +526,18 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceRuleId: issue.rule?.id,
     sourceIssueTitle: issue.title,
     sourceIssueMessage: issue.message,
+    sourceIssueSummary: summarizeRecoverySource(issue.message),
   };
+}
+
+function summarizeRecoverySource(message: string) {
+  const normalized = message.trim().replace(/\s+/g, " ");
+
+  if (normalized.length <= 96) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, 93)}...`;
 }
 
 function createRetryFeedback(
