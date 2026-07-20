@@ -45,6 +45,7 @@ export type RecoveryAttempt = {
   sourceIssueTitle: string;
   sourceIssueMessage: string;
   sourceIssueSummary: string;
+  sourceIssueSummaryTruncated: boolean;
 };
 
 export type ApplyGuardResult =
