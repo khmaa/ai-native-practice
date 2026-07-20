@@ -25,6 +25,9 @@ export function PlannerStatePanel({
           <span>{recoveryAttempt.message}</span>
           <small>source issue: {recoveryAttempt.sourceIssueTitle}</small>
           <small>source summary: {recoveryAttempt.sourceIssueSummary}</small>
+          <small>
+            source display: {recoveryAttempt.sourceIssueSummaryTruncated ? "truncated summary" : "complete summary"}
+          </small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}

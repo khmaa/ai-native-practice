@@ -505,6 +505,8 @@ function createApplyGuardIssue(message: string, ruleId: PlannerPolicyRuleId): Pl
 }
 
 function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: PlannerIssue): RecoveryAttempt {
+  const sourceIssueSummary = summarizeRecoverySource(issue.message);
+
   if (action === "edit-preview") {
     return {
       action: "edit-preview",
@@ -514,7 +516,8 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceRuleId: issue.rule?.id,
       sourceIssueTitle: issue.title,
       sourceIssueMessage: issue.message,
-      sourceIssueSummary: summarizeRecoverySource(issue.message),
+      sourceIssueSummary: sourceIssueSummary.text,
+      sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
     };
   }
 
@@ -526,7 +529,8 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceRuleId: issue.rule?.id,
     sourceIssueTitle: issue.title,
     sourceIssueMessage: issue.message,
-    sourceIssueSummary: summarizeRecoverySource(issue.message),
+    sourceIssueSummary: sourceIssueSummary.text,
+    sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
   };
 }
 
@@ -534,10 +538,16 @@ function summarizeRecoverySource(message: string) {
   const normalized = message.trim().replace(/\s+/g, " ");
 
   if (normalized.length <= 96) {
-    return normalized;
+    return {
+      text: normalized,
+      truncated: false,
+    };
   }
 
-  return `${normalized.slice(0, 93)}...`;
+  return {
+    text: `${normalized.slice(0, 93)}...`,
+    truncated: true,
+  };
 }
 
 function createRetryFeedback(
