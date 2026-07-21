@@ -26,6 +26,8 @@ import type {
 } from "./types/planner";
 import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
 
+const recoverySourceSummaryLimit = 96;
+
 export default function App() {
   const [prompt, setPrompt] = useState("");
   const [feedbackNote, setFeedbackNote] = useState("");
@@ -517,6 +519,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceIssueTitle: issue.title,
       sourceIssueMessage: issue.message,
       sourceIssueSummary: sourceIssueSummary.text,
+      sourceIssueSummaryLimit: sourceIssueSummary.limit,
       sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
     };
   }
@@ -530,6 +533,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceIssueTitle: issue.title,
     sourceIssueMessage: issue.message,
     sourceIssueSummary: sourceIssueSummary.text,
+    sourceIssueSummaryLimit: sourceIssueSummary.limit,
     sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
   };
 }
@@ -537,15 +541,17 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
 function summarizeRecoverySource(message: string) {
   const normalized = message.trim().replace(/\s+/g, " ");
 
-  if (normalized.length <= 96) {
+  if (normalized.length <= recoverySourceSummaryLimit) {
     return {
       text: normalized,
+      limit: recoverySourceSummaryLimit,
       truncated: false,
     };
   }
 
   return {
-    text: `${normalized.slice(0, 93)}...`,
+    text: `${normalized.slice(0, recoverySourceSummaryLimit - 3)}...`,
+    limit: recoverySourceSummaryLimit,
     truncated: true,
   };
 }
