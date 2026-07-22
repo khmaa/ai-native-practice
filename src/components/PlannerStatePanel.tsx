@@ -28,6 +28,7 @@ export function PlannerStatePanel({
           <small>
             source display: {recoveryAttempt.sourceIssueSummaryTruncated ? "truncated summary" : "complete summary"}
           </small>
+          <small>source policy: {recoveryAttempt.sourceIssueSummaryPolicyId}</small>
           <small>source budget: {recoveryAttempt.sourceIssueSummaryLimit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryReason}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}

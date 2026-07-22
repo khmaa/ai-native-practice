@@ -27,6 +27,7 @@ import type {
 import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
 
 const recoverySourceSummaryLimit = 96;
+const recoverySourceSummaryPolicyId = "recovery-source-summary-v1";
 const recoverySourceSummaryReason = "keeps recovery provenance scannable inside the state panel";
 
 export default function App() {
@@ -520,6 +521,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceIssueTitle: issue.title,
       sourceIssueMessage: issue.message,
       sourceIssueSummary: sourceIssueSummary.text,
+      sourceIssueSummaryPolicyId: sourceIssueSummary.policyId,
       sourceIssueSummaryLimit: sourceIssueSummary.limit,
       sourceIssueSummaryReason: sourceIssueSummary.reason,
       sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
@@ -535,6 +537,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceIssueTitle: issue.title,
     sourceIssueMessage: issue.message,
     sourceIssueSummary: sourceIssueSummary.text,
+    sourceIssueSummaryPolicyId: sourceIssueSummary.policyId,
     sourceIssueSummaryLimit: sourceIssueSummary.limit,
     sourceIssueSummaryReason: sourceIssueSummary.reason,
     sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
@@ -547,6 +550,7 @@ function summarizeRecoverySource(message: string) {
   if (normalized.length <= recoverySourceSummaryLimit) {
     return {
       text: normalized,
+      policyId: recoverySourceSummaryPolicyId,
       limit: recoverySourceSummaryLimit,
       reason: recoverySourceSummaryReason,
       truncated: false,
@@ -555,6 +559,7 @@ function summarizeRecoverySource(message: string) {
 
   return {
     text: `${normalized.slice(0, recoverySourceSummaryLimit - 3)}...`,
+    policyId: recoverySourceSummaryPolicyId,
     limit: recoverySourceSummaryLimit,
     reason: recoverySourceSummaryReason,
     truncated: true,
