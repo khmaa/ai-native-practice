@@ -46,6 +46,7 @@ export type RecoveryAttempt = {
   sourceIssueMessage: string;
   sourceIssueSummary: string;
   sourceIssueSummaryLimit: number;
+  sourceIssueSummaryReason: string;
   sourceIssueSummaryTruncated: boolean;
 };
 
