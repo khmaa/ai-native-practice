@@ -27,6 +27,7 @@ import type {
 import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
 
 const recoverySourceSummaryLimit = 96;
+const recoverySourceSummaryReason = "keeps recovery provenance scannable inside the state panel";
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -520,6 +521,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceIssueMessage: issue.message,
       sourceIssueSummary: sourceIssueSummary.text,
       sourceIssueSummaryLimit: sourceIssueSummary.limit,
+      sourceIssueSummaryReason: sourceIssueSummary.reason,
       sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
     };
   }
@@ -534,6 +536,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceIssueMessage: issue.message,
     sourceIssueSummary: sourceIssueSummary.text,
     sourceIssueSummaryLimit: sourceIssueSummary.limit,
+    sourceIssueSummaryReason: sourceIssueSummary.reason,
     sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
   };
 }
@@ -545,6 +548,7 @@ function summarizeRecoverySource(message: string) {
     return {
       text: normalized,
       limit: recoverySourceSummaryLimit,
+      reason: recoverySourceSummaryReason,
       truncated: false,
     };
   }
@@ -552,6 +556,7 @@ function summarizeRecoverySource(message: string) {
   return {
     text: `${normalized.slice(0, recoverySourceSummaryLimit - 3)}...`,
     limit: recoverySourceSummaryLimit,
+    reason: recoverySourceSummaryReason,
     truncated: true,
   };
 }
