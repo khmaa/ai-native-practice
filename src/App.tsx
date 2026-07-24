@@ -26,9 +26,11 @@ import type {
 } from "./types/planner";
 import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
 
-const recoverySourceSummaryLimit = 96;
-const recoverySourceSummaryPolicyId = "recovery-source-summary-v1";
-const recoverySourceSummaryReason = "keeps recovery provenance scannable inside the state panel";
+const recoverySourceSummaryPolicy = {
+  id: "recovery-source-summary-v1",
+  limit: 96,
+  reason: "keeps recovery provenance scannable inside the state panel",
+};
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -521,9 +523,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
       sourceIssueTitle: issue.title,
       sourceIssueMessage: issue.message,
       sourceIssueSummary: sourceIssueSummary.text,
-      sourceIssueSummaryPolicyId: sourceIssueSummary.policyId,
-      sourceIssueSummaryLimit: sourceIssueSummary.limit,
-      sourceIssueSummaryReason: sourceIssueSummary.reason,
+      sourceIssueSummaryPolicy: sourceIssueSummary.policy,
       sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
     };
   }
@@ -537,9 +537,7 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceIssueTitle: issue.title,
     sourceIssueMessage: issue.message,
     sourceIssueSummary: sourceIssueSummary.text,
-    sourceIssueSummaryPolicyId: sourceIssueSummary.policyId,
-    sourceIssueSummaryLimit: sourceIssueSummary.limit,
-    sourceIssueSummaryReason: sourceIssueSummary.reason,
+    sourceIssueSummaryPolicy: sourceIssueSummary.policy,
     sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
   };
 }
@@ -547,21 +545,17 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
 function summarizeRecoverySource(message: string) {
   const normalized = message.trim().replace(/\s+/g, " ");
 
-  if (normalized.length <= recoverySourceSummaryLimit) {
+  if (normalized.length <= recoverySourceSummaryPolicy.limit) {
     return {
       text: normalized,
-      policyId: recoverySourceSummaryPolicyId,
-      limit: recoverySourceSummaryLimit,
-      reason: recoverySourceSummaryReason,
+      policy: recoverySourceSummaryPolicy,
       truncated: false,
     };
   }
 
   return {
-    text: `${normalized.slice(0, recoverySourceSummaryLimit - 3)}...`,
-    policyId: recoverySourceSummaryPolicyId,
-    limit: recoverySourceSummaryLimit,
-    reason: recoverySourceSummaryReason,
+    text: `${normalized.slice(0, recoverySourceSummaryPolicy.limit - 3)}...`,
+    policy: recoverySourceSummaryPolicy,
     truncated: true,
   };
 }
