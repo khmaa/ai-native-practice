@@ -27,6 +27,12 @@ export type TaskSuggestionPatch = Partial<TaskSuggestion>;
 export type RecoveryAction = "regenerate" | "edit-preview";
 export type RecoveryAttemptStatus = "started" | "succeeded" | "failed" | "cancelled";
 
+export type RecoverySourceSummaryPolicySnapshot = {
+  id: string;
+  limit: number;
+  reason: string;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;
@@ -45,9 +51,7 @@ export type RecoveryAttempt = {
   sourceIssueTitle: string;
   sourceIssueMessage: string;
   sourceIssueSummary: string;
-  sourceIssueSummaryPolicyId: string;
-  sourceIssueSummaryLimit: number;
-  sourceIssueSummaryReason: string;
+  sourceIssueSummaryPolicy: RecoverySourceSummaryPolicySnapshot;
   sourceIssueSummaryTruncated: boolean;
 };
 
