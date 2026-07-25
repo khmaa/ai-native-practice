@@ -10,6 +10,7 @@ import { getPlannerStateView } from "./lib/plannerState";
 import { createPlannerPolicySnapshot, getPlannerPolicyRule } from "./lib/plannerPolicy";
 import { getRandomSamplePrompt, streamSteps, toTaskSuggestion } from "./lib/mockPlanner";
 import { createPlanRequest, requestPlanDraft } from "./lib/plannerAgent";
+import { summarizeRecoverySource } from "./lib/recoverySourceSummaryPolicy";
 import { validateApplySelection } from "./lib/validateApplySelection";
 import { validatePlanResponse } from "./lib/validatePlanResponse";
 import { wait } from "./lib/wait";
@@ -25,12 +26,6 @@ import type {
   TaskSuggestionPatch,
 } from "./types/planner";
 import type { PlannerPolicyRuleId } from "./types/plannerPolicy";
-
-const recoverySourceSummaryPolicy = {
-  id: "recovery-source-summary-v1",
-  limit: 96,
-  reason: "keeps recovery provenance scannable inside the state panel",
-};
 
 export default function App() {
   const [prompt, setPrompt] = useState("");
@@ -539,24 +534,6 @@ function createRecoveryAttempt(action: RecoveryAttempt["action"], issue: Planner
     sourceIssueSummary: sourceIssueSummary.text,
     sourceIssueSummaryPolicy: sourceIssueSummary.policy,
     sourceIssueSummaryTruncated: sourceIssueSummary.truncated,
-  };
-}
-
-function summarizeRecoverySource(message: string) {
-  const normalized = message.trim().replace(/\s+/g, " ");
-
-  if (normalized.length <= recoverySourceSummaryPolicy.limit) {
-    return {
-      text: normalized,
-      policy: recoverySourceSummaryPolicy,
-      truncated: false,
-    };
-  }
-
-  return {
-    text: `${normalized.slice(0, recoverySourceSummaryPolicy.limit - 3)}...`,
-    policy: recoverySourceSummaryPolicy,
-    truncated: true,
   };
 }
 
