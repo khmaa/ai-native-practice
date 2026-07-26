@@ -1,4 +1,8 @@
-import type { RecoverySourceSummaryPolicySnapshot, RecoverySourceSummaryResult } from "../types/planner";
+import type {
+  RecoverySourceSummaryContractExample,
+  RecoverySourceSummaryPolicySnapshot,
+  RecoverySourceSummaryResult,
+} from "../types/planner";
 
 export const recoverySourceSummaryPolicy: RecoverySourceSummaryPolicySnapshot = {
   id: "recovery-source-summary-v1",
@@ -23,3 +27,24 @@ export function summarizeRecoverySource(message: string): RecoverySourceSummaryR
     truncated: true,
   };
 }
+
+export const recoverySourceSummaryContractExamples: RecoverySourceSummaryContractExample[] = [
+  {
+    name: "complete source issue summary",
+    input: "Title is required.",
+    expected: {
+      text: "Title is required.",
+      policy: recoverySourceSummaryPolicy,
+      truncated: false,
+    },
+  },
+  {
+    name: "truncated source issue summary",
+    input: "A".repeat(recoverySourceSummaryPolicy.limit + 4),
+    expected: {
+      text: `${"A".repeat(recoverySourceSummaryPolicy.limit - 3)}...`,
+      policy: recoverySourceSummaryPolicy,
+      truncated: true,
+    },
+  },
+];

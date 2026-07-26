@@ -1,3 +1,4 @@
+import { recoverySourceSummaryContractExamples } from "../lib/recoverySourceSummaryPolicy";
 import type { PlannerStateView } from "../lib/plannerState";
 import type { RecoveryAttempt } from "../types/planner";
 
@@ -31,6 +32,7 @@ export function PlannerStatePanel({
           <small>source policy: {recoveryAttempt.sourceIssueSummaryPolicy.id}</small>
           <small>source budget: {recoveryAttempt.sourceIssueSummaryPolicy.limit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryPolicy.reason}</small>
+          <small>policy examples: {recoverySourceSummaryContractExamples.length} cases</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
