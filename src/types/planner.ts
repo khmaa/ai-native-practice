@@ -33,6 +33,12 @@ export type RecoverySourceSummaryPolicySnapshot = {
   reason: string;
 };
 
+export type RecoverySourceSummaryResult = {
+  text: string;
+  policy: RecoverySourceSummaryPolicySnapshot;
+  truncated: boolean;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;
