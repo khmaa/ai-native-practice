@@ -39,6 +39,12 @@ export type RecoverySourceSummaryResult = {
   truncated: boolean;
 };
 
+export type RecoverySourceSummaryContractExample = {
+  name: string;
+  input: string;
+  expected: RecoverySourceSummaryResult;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;
