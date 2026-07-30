@@ -1,4 +1,5 @@
 import type {
+  RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryPolicySnapshot,
   RecoverySourceSummaryResult,
@@ -48,3 +49,25 @@ export const recoverySourceSummaryContractExamples: RecoverySourceSummaryContrac
     },
   },
 ];
+
+export function checkRecoverySourceSummaryContractExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractExamples.map((example) => {
+    const actual = summarizeRecoverySource(example.input);
+
+    return {
+      name: example.name,
+      passed: isRecoverySourceSummaryResultEqual(actual, example.expected),
+    };
+  });
+}
+
+function isRecoverySourceSummaryResultEqual(
+  actual: RecoverySourceSummaryResult,
+  expected: RecoverySourceSummaryResult,
+) {
+  return actual.text === expected.text
+    && actual.truncated === expected.truncated
+    && actual.policy.id === expected.policy.id
+    && actual.policy.limit === expected.policy.limit
+    && actual.policy.reason === expected.policy.reason;
+}

@@ -1,4 +1,4 @@
-import { recoverySourceSummaryContractExamples } from "../lib/recoverySourceSummaryPolicy";
+import { checkRecoverySourceSummaryContractExamples } from "../lib/recoverySourceSummaryPolicy";
 import type { PlannerStateView } from "../lib/plannerState";
 import type { RecoveryAttempt } from "../types/planner";
 
@@ -9,6 +9,9 @@ export function PlannerStatePanel({
   stateView: PlannerStateView;
   recoveryAttempt: RecoveryAttempt | null;
 }) {
+  const contractChecks = checkRecoverySourceSummaryContractExamples();
+  const passedContractCheckCount = contractChecks.filter((check) => check.passed).length;
+
   return (
     <section className="state-panel" aria-label="planner state">
       <p className="eyebrow">State Machine</p>
@@ -32,7 +35,9 @@ export function PlannerStatePanel({
           <small>source policy: {recoveryAttempt.sourceIssueSummaryPolicy.id}</small>
           <small>source budget: {recoveryAttempt.sourceIssueSummaryPolicy.limit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryPolicy.reason}</small>
-          <small>policy examples: {recoverySourceSummaryContractExamples.length} cases</small>
+          <small>
+            policy examples: {passedContractCheckCount}/{contractChecks.length} passing
+          </small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}

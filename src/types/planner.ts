@@ -45,6 +45,11 @@ export type RecoverySourceSummaryContractExample = {
   expected: RecoverySourceSummaryResult;
 };
 
+export type RecoverySourceSummaryContractCheck = {
+  name: string;
+  passed: boolean;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;
