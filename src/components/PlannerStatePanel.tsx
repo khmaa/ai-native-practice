@@ -11,6 +11,7 @@ export function PlannerStatePanel({
 }) {
   const contractChecks = checkRecoverySourceSummaryContractExamples();
   const passedContractCheckCount = contractChecks.filter((check) => check.passed).length;
+  const contractCheckDiagnostics = summarizeContractCheckDiagnostics(contractChecks);
 
   return (
     <section className="state-panel" aria-label="planner state">
@@ -38,6 +39,7 @@ export function PlannerStatePanel({
           <small>
             policy examples: {passedContractCheckCount}/{contractChecks.length} passing
           </small>
+          <small>policy diagnostics: {contractCheckDiagnostics}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
@@ -59,4 +61,18 @@ function summarizeRecoveryStatus(status: RecoveryAttempt["status"]) {
   }
 
   return "cancelled";
+}
+
+function summarizeContractCheckDiagnostics(
+  checks: ReturnType<typeof checkRecoverySourceSummaryContractExamples>,
+) {
+  const failedChecks = checks.filter((check) => !check.passed);
+
+  if (failedChecks.length === 0) {
+    return "none";
+  }
+
+  return failedChecks
+    .map((check) => `${check.name}: ${check.mismatchedFields.join(", ")}`)
+    .join(" · ");
 }

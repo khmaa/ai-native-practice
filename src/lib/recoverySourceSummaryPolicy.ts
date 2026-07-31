@@ -53,21 +53,25 @@ export const recoverySourceSummaryContractExamples: RecoverySourceSummaryContrac
 export function checkRecoverySourceSummaryContractExamples(): RecoverySourceSummaryContractCheck[] {
   return recoverySourceSummaryContractExamples.map((example) => {
     const actual = summarizeRecoverySource(example.input);
+    const mismatchedFields = findRecoverySourceSummaryMismatches(actual, example.expected);
 
     return {
       name: example.name,
-      passed: isRecoverySourceSummaryResultEqual(actual, example.expected),
+      passed: mismatchedFields.length === 0,
+      mismatchedFields,
     };
   });
 }
 
-function isRecoverySourceSummaryResultEqual(
+function findRecoverySourceSummaryMismatches(
   actual: RecoverySourceSummaryResult,
   expected: RecoverySourceSummaryResult,
 ) {
-  return actual.text === expected.text
-    && actual.truncated === expected.truncated
-    && actual.policy.id === expected.policy.id
-    && actual.policy.limit === expected.policy.limit
-    && actual.policy.reason === expected.policy.reason;
+  return [
+    actual.text === expected.text ? undefined : "text",
+    actual.truncated === expected.truncated ? undefined : "truncated",
+    actual.policy.id === expected.policy.id ? undefined : "policy.id",
+    actual.policy.limit === expected.policy.limit ? undefined : "policy.limit",
+    actual.policy.reason === expected.policy.reason ? undefined : "policy.reason",
+  ].filter((field): field is string => Boolean(field));
 }
