@@ -48,6 +48,7 @@ export type RecoverySourceSummaryContractExample = {
 export type RecoverySourceSummaryContractCheck = {
   name: string;
   passed: boolean;
+  mismatchedFields: string[];
 };
 
 export type PlannerIssue = {
