@@ -1,4 +1,4 @@
-import { checkRecoverySourceSummaryContractExamples } from "../lib/recoverySourceSummaryPolicy";
+import { summarizeRecoverySourceSummaryContractChecks } from "../lib/recoverySourceSummaryPolicy";
 import type { PlannerStateView } from "../lib/plannerState";
 import type { RecoveryAttempt } from "../types/planner";
 
@@ -9,9 +9,7 @@ export function PlannerStatePanel({
   stateView: PlannerStateView;
   recoveryAttempt: RecoveryAttempt | null;
 }) {
-  const contractChecks = checkRecoverySourceSummaryContractExamples();
-  const passedContractCheckCount = contractChecks.filter((check) => check.passed).length;
-  const contractCheckDiagnostics = summarizeContractCheckDiagnostics(contractChecks);
+  const contractCheckSummary = summarizeRecoverySourceSummaryContractChecks();
 
   return (
     <section className="state-panel" aria-label="planner state">
@@ -37,9 +35,9 @@ export function PlannerStatePanel({
           <small>source budget: {recoveryAttempt.sourceIssueSummaryPolicy.limit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryPolicy.reason}</small>
           <small>
-            policy examples: {passedContractCheckCount}/{contractChecks.length} passing
+            policy examples: {contractCheckSummary.passed}/{contractCheckSummary.total} passing
           </small>
-          <small>policy diagnostics: {contractCheckDiagnostics}</small>
+          <small>policy diagnostics: {contractCheckSummary.diagnostics}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
@@ -61,18 +59,4 @@ function summarizeRecoveryStatus(status: RecoveryAttempt["status"]) {
   }
 
   return "cancelled";
-}
-
-function summarizeContractCheckDiagnostics(
-  checks: ReturnType<typeof checkRecoverySourceSummaryContractExamples>,
-) {
-  const failedChecks = checks.filter((check) => !check.passed);
-
-  if (failedChecks.length === 0) {
-    return "none";
-  }
-
-  return failedChecks
-    .map((check) => `${check.name}: ${check.mismatchedFields.join(", ")}`)
-    .join(" · ");
 }

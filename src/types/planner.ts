@@ -51,6 +51,12 @@ export type RecoverySourceSummaryContractCheck = {
   mismatchedFields: string[];
 };
 
+export type RecoverySourceSummaryContractCheckSummary = {
+  total: number;
+  passed: number;
+  diagnostics: string;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;

@@ -1,6 +1,7 @@
 import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
+  RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryPolicySnapshot,
   RecoverySourceSummaryResult,
 } from "../types/planner";
@@ -63,6 +64,16 @@ export function checkRecoverySourceSummaryContractExamples(): RecoverySourceSumm
   });
 }
 
+export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractExamples();
+
+  return {
+    total: checks.length,
+    passed: checks.filter((check) => check.passed).length,
+    diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
+  };
+}
+
 function findRecoverySourceSummaryMismatches(
   actual: RecoverySourceSummaryResult,
   expected: RecoverySourceSummaryResult,
@@ -74,4 +85,18 @@ function findRecoverySourceSummaryMismatches(
     actual.policy.limit === expected.policy.limit ? undefined : "policy.limit",
     actual.policy.reason === expected.policy.reason ? undefined : "policy.reason",
   ].filter((field): field is string => Boolean(field));
+}
+
+function summarizeRecoverySourceSummaryContractDiagnostics(
+  checks: RecoverySourceSummaryContractCheck[],
+) {
+  const failedChecks = checks.filter((check) => !check.passed);
+
+  if (failedChecks.length === 0) {
+    return "none";
+  }
+
+  return failedChecks
+    .map((check) => `${check.name}: ${check.mismatchedFields.join(", ")}`)
+    .join(" · ");
 }
