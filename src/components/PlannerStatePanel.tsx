@@ -1,4 +1,4 @@
-import { summarizeRecoverySourceSummaryContractChecks } from "../lib/recoverySourceSummaryPolicy";
+import { createRecoverySourceSummaryPolicyHealthSnapshot } from "../lib/recoverySourceSummaryPolicy";
 import type { PlannerStateView } from "../lib/plannerState";
 import type { RecoveryAttempt } from "../types/planner";
 
@@ -9,7 +9,7 @@ export function PlannerStatePanel({
   stateView: PlannerStateView;
   recoveryAttempt: RecoveryAttempt | null;
 }) {
-  const contractCheckSummary = summarizeRecoverySourceSummaryContractChecks();
+  const policyHealth = createRecoverySourceSummaryPolicyHealthSnapshot();
 
   return (
     <section className="state-panel" aria-label="planner state">
@@ -34,10 +34,11 @@ export function PlannerStatePanel({
           <small>source policy: {recoveryAttempt.sourceIssueSummaryPolicy.id}</small>
           <small>source budget: {recoveryAttempt.sourceIssueSummaryPolicy.limit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryPolicy.reason}</small>
+          <small>policy health: {policyHealth.policy.id}</small>
           <small>
-            policy examples: {contractCheckSummary.passed}/{contractCheckSummary.total} passing
+            policy examples: {policyHealth.contract.passed}/{policyHealth.contract.total} passing
           </small>
-          <small>policy diagnostics: {contractCheckSummary.diagnostics}</small>
+          <small>policy diagnostics: {policyHealth.contract.diagnostics}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
