@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryPolicyHealthSnapshot,
   RecoverySourceSummaryPolicySnapshot,
   RecoverySourceSummaryResult,
 } from "../types/planner";
@@ -71,6 +72,13 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
     total: checks.length,
     passed: checks.filter((check) => check.passed).length,
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
+  };
+}
+
+export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourceSummaryPolicyHealthSnapshot {
+  return {
+    policy: recoverySourceSummaryPolicy,
+    contract: summarizeRecoverySourceSummaryContractChecks(),
   };
 }
 

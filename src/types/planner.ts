@@ -57,6 +57,11 @@ export type RecoverySourceSummaryContractCheckSummary = {
   diagnostics: string;
 };
 
+export type RecoverySourceSummaryPolicyHealthSnapshot = {
+  policy: RecoverySourceSummaryPolicySnapshot;
+  contract: RecoverySourceSummaryContractCheckSummary;
+};
+
 export type PlannerIssue = {
   title: string;
   message: string;
