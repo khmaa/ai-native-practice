@@ -34,7 +34,9 @@ export function PlannerStatePanel({
           <small>source policy: {recoveryAttempt.sourceIssueSummaryPolicy.id}</small>
           <small>source budget: {recoveryAttempt.sourceIssueSummaryPolicy.limit} chars</small>
           <small>budget reason: {recoveryAttempt.sourceIssueSummaryPolicy.reason}</small>
-          <small>policy health: {policyHealth.policy.id}</small>
+          <small>
+            policy health: {policyHealth.status} · {policyHealth.policy.id}
+          </small>
           <small>
             policy examples: {policyHealth.contract.passed}/{policyHealth.contract.total} passing
           </small>
