@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryPolicyHealthStatus,
   RecoverySourceSummaryPolicyHealthSnapshot,
   RecoverySourceSummaryPolicySnapshot,
   RecoverySourceSummaryResult,
@@ -76,10 +77,19 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
 }
 
 export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourceSummaryPolicyHealthSnapshot {
+  const contract = summarizeRecoverySourceSummaryContractChecks();
+
   return {
+    status: getRecoverySourceSummaryPolicyHealthStatus(contract),
     policy: recoverySourceSummaryPolicy,
-    contract: summarizeRecoverySourceSummaryContractChecks(),
+    contract,
   };
+}
+
+function getRecoverySourceSummaryPolicyHealthStatus(
+  contract: RecoverySourceSummaryContractCheckSummary,
+): RecoverySourceSummaryPolicyHealthStatus {
+  return contract.passed === contract.total ? "healthy" : "degraded";
 }
 
 function findRecoverySourceSummaryMismatches(
