@@ -37,6 +37,8 @@ export function PlannerStatePanel({
           <small>
             policy health: {policyHealth.status} · {policyHealth.policy.id}
           </small>
+          <small>policy guidance: {policyHealth.guidance.label}</small>
+          <small>guidance detail: {policyHealth.guidance.message}</small>
           <small>
             policy examples: {policyHealth.contract.passed}/{policyHealth.contract.total} passing
           </small>
