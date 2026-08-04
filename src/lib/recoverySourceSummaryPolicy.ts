@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthStatus,
   RecoverySourceSummaryPolicyHealthSnapshot,
   RecoverySourceSummaryPolicySnapshot,
@@ -78,9 +79,11 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
 
 export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourceSummaryPolicyHealthSnapshot {
   const contract = summarizeRecoverySourceSummaryContractChecks();
+  const status = getRecoverySourceSummaryPolicyHealthStatus(contract);
 
   return {
-    status: getRecoverySourceSummaryPolicyHealthStatus(contract),
+    status,
+    guidance: getRecoverySourceSummaryPolicyHealthGuidance(status),
     policy: recoverySourceSummaryPolicy,
     contract,
   };
@@ -90,6 +93,22 @@ function getRecoverySourceSummaryPolicyHealthStatus(
   contract: RecoverySourceSummaryContractCheckSummary,
 ): RecoverySourceSummaryPolicyHealthStatus {
   return contract.passed === contract.total ? "healthy" : "degraded";
+}
+
+function getRecoverySourceSummaryPolicyHealthGuidance(
+  status: RecoverySourceSummaryPolicyHealthStatus,
+): RecoverySourceSummaryPolicyHealthGuidance {
+  if (status === "healthy") {
+    return {
+      label: "safe to display",
+      message: "Contract examples are passing, so the recovery source summary can be shown as designed.",
+    };
+  }
+
+  return {
+    label: "review diagnostics",
+    message: "Some contract examples are failing, so inspect diagnostics before trusting the recovery summary display.",
+  };
 }
 
 function findRecoverySourceSummaryMismatches(

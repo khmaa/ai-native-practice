@@ -59,8 +59,14 @@ export type RecoverySourceSummaryContractCheckSummary = {
 
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
 
+export type RecoverySourceSummaryPolicyHealthGuidance = {
+  label: string;
+  message: string;
+};
+
 export type RecoverySourceSummaryPolicyHealthSnapshot = {
   status: RecoverySourceSummaryPolicyHealthStatus;
+  guidance: RecoverySourceSummaryPolicyHealthGuidance;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
 };
