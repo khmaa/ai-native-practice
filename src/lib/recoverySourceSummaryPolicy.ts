@@ -3,6 +3,7 @@ import type {
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryPolicyHealthGuidance,
+  RecoverySourceSummaryPolicyHealthGuidanceSeverity,
   RecoverySourceSummaryPolicyHealthStatus,
   RecoverySourceSummaryPolicyHealthSnapshot,
   RecoverySourceSummaryPolicySnapshot,
@@ -100,15 +101,23 @@ function getRecoverySourceSummaryPolicyHealthGuidance(
 ): RecoverySourceSummaryPolicyHealthGuidance {
   if (status === "healthy") {
     return {
+      severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
       label: "safe to display",
       message: "Contract examples are passing, so the recovery source summary can be shown as designed.",
     };
   }
 
   return {
+    severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
     label: "review diagnostics",
     message: "Some contract examples are failing, so inspect diagnostics before trusting the recovery summary display.",
   };
+}
+
+function getRecoverySourceSummaryPolicyHealthGuidanceSeverity(
+  status: RecoverySourceSummaryPolicyHealthStatus,
+): RecoverySourceSummaryPolicyHealthGuidanceSeverity {
+  return status === "healthy" ? "info" : "warning";
 }
 
 function findRecoverySourceSummaryMismatches(
