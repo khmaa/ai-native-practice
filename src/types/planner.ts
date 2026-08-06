@@ -58,8 +58,10 @@ export type RecoverySourceSummaryContractCheckSummary = {
 };
 
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
+export type RecoverySourceSummaryPolicyHealthGuidanceSeverity = "info" | "warning";
 
 export type RecoverySourceSummaryPolicyHealthGuidance = {
+  severity: RecoverySourceSummaryPolicyHealthGuidanceSeverity;
   label: string;
   message: string;
 };
