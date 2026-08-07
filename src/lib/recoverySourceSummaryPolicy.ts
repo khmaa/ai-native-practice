@@ -4,6 +4,7 @@ import type {
   RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceSeverity,
+  RecoverySourceSummaryPolicyHealthGuidanceTone,
   RecoverySourceSummaryPolicyHealthStatus,
   RecoverySourceSummaryPolicyHealthSnapshot,
   RecoverySourceSummaryPolicySnapshot,
@@ -102,6 +103,7 @@ function getRecoverySourceSummaryPolicyHealthGuidance(
   if (status === "healthy") {
     return {
       severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
+      tone: getRecoverySourceSummaryPolicyHealthGuidanceTone(status),
       label: "safe to display",
       message: "Contract examples are passing, so the recovery source summary can be shown as designed.",
     };
@@ -109,6 +111,7 @@ function getRecoverySourceSummaryPolicyHealthGuidance(
 
   return {
     severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
+    tone: getRecoverySourceSummaryPolicyHealthGuidanceTone(status),
     label: "review diagnostics",
     message: "Some contract examples are failing, so inspect diagnostics before trusting the recovery summary display.",
   };
@@ -118,6 +121,12 @@ function getRecoverySourceSummaryPolicyHealthGuidanceSeverity(
   status: RecoverySourceSummaryPolicyHealthStatus,
 ): RecoverySourceSummaryPolicyHealthGuidanceSeverity {
   return status === "healthy" ? "info" : "warning";
+}
+
+function getRecoverySourceSummaryPolicyHealthGuidanceTone(
+  status: RecoverySourceSummaryPolicyHealthStatus,
+): RecoverySourceSummaryPolicyHealthGuidanceTone {
+  return status === "healthy" ? "calm" : "cautious";
 }
 
 function findRecoverySourceSummaryMismatches(

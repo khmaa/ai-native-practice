@@ -59,9 +59,11 @@ export type RecoverySourceSummaryContractCheckSummary = {
 
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
 export type RecoverySourceSummaryPolicyHealthGuidanceSeverity = "info" | "warning";
+export type RecoverySourceSummaryPolicyHealthGuidanceTone = "calm" | "cautious";
 
 export type RecoverySourceSummaryPolicyHealthGuidance = {
   severity: RecoverySourceSummaryPolicyHealthGuidanceSeverity;
+  tone: RecoverySourceSummaryPolicyHealthGuidanceTone;
   label: string;
   message: string;
 };
