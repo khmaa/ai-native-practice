@@ -65,6 +65,7 @@ export type RecoverySourceSummaryPolicyHealthGuidance = {
   severity: RecoverySourceSummaryPolicyHealthGuidanceSeverity;
   tone: RecoverySourceSummaryPolicyHealthGuidanceTone;
   label: string;
+  displayText: string;
   message: string;
 };
 

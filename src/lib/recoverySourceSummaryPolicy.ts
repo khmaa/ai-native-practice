@@ -100,21 +100,38 @@ function getRecoverySourceSummaryPolicyHealthStatus(
 function getRecoverySourceSummaryPolicyHealthGuidance(
   status: RecoverySourceSummaryPolicyHealthStatus,
 ): RecoverySourceSummaryPolicyHealthGuidance {
+  const severity = getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status);
+  const tone = getRecoverySourceSummaryPolicyHealthGuidanceTone(status);
+
   if (status === "healthy") {
+    const label = "safe to display";
+
     return {
-      severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
-      tone: getRecoverySourceSummaryPolicyHealthGuidanceTone(status),
-      label: "safe to display",
+      severity,
+      tone,
+      label,
+      displayText: formatRecoverySourceSummaryPolicyHealthGuidanceDisplayText(severity, tone, label),
       message: "Contract examples are passing, so the recovery source summary can be shown as designed.",
     };
   }
 
+  const label = "review diagnostics";
+
   return {
-    severity: getRecoverySourceSummaryPolicyHealthGuidanceSeverity(status),
-    tone: getRecoverySourceSummaryPolicyHealthGuidanceTone(status),
-    label: "review diagnostics",
+    severity,
+    tone,
+    label,
+    displayText: formatRecoverySourceSummaryPolicyHealthGuidanceDisplayText(severity, tone, label),
     message: "Some contract examples are failing, so inspect diagnostics before trusting the recovery summary display.",
   };
+}
+
+function formatRecoverySourceSummaryPolicyHealthGuidanceDisplayText(
+  severity: RecoverySourceSummaryPolicyHealthGuidanceSeverity,
+  tone: RecoverySourceSummaryPolicyHealthGuidanceTone,
+  label: string,
+) {
+  return `${severity} · ${tone} · ${label}`;
 }
 
 function getRecoverySourceSummaryPolicyHealthGuidanceSeverity(
