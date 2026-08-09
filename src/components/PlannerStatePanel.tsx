@@ -37,6 +37,10 @@ export function PlannerStatePanel({
           <small>
             policy health: {policyHealth.status} · {policyHealth.policy.id}
           </small>
+          <small>
+            contract aggregate: {policyHealth.contractAggregate.passed}/{policyHealth.contractAggregate.total} passing
+          </small>
+          <small>aggregate diagnostics: {policyHealth.contractAggregate.diagnostics}</small>
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
           <small>guidance detail: {policyHealth.guidance.message}</small>
           <small>

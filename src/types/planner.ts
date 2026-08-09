@@ -85,6 +85,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   status: RecoverySourceSummaryPolicyHealthStatus;
   guidance: RecoverySourceSummaryPolicyHealthGuidance;
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
+  contractAggregate: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
 };

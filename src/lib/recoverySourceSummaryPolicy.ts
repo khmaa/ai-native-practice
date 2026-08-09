@@ -83,12 +83,24 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
 
 export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourceSummaryPolicyHealthSnapshot {
   const contract = summarizeRecoverySourceSummaryContractChecks();
-  const status = getRecoverySourceSummaryPolicyHealthStatus(contract);
+  const guidanceDisplayContract = summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks();
+  const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate([
+    {
+      name: "summary",
+      summary: contract,
+    },
+    {
+      name: "guidance display",
+      summary: guidanceDisplayContract,
+    },
+  ]);
+  const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
   return {
     status,
     guidance: getRecoverySourceSummaryPolicyHealthGuidance(status),
-    guidanceDisplayContract: summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(),
+    guidanceDisplayContract,
+    contractAggregate,
     policy: recoverySourceSummaryPolicy,
     contract,
   };
@@ -136,6 +148,28 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
     passed: checks.filter((check) => check.passed).length,
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
+}
+
+function summarizeRecoverySourceSummaryPolicyContractAggregate(
+  contractSummaries: { name: string; summary: RecoverySourceSummaryContractCheckSummary }[],
+): RecoverySourceSummaryContractCheckSummary {
+  return {
+    total: contractSummaries.reduce((total, item) => total + item.summary.total, 0),
+    passed: contractSummaries.reduce((passed, item) => passed + item.summary.passed, 0),
+    diagnostics: summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(contractSummaries),
+  };
+}
+
+function summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(
+  contractSummaries: { name: string; summary: RecoverySourceSummaryContractCheckSummary }[],
+) {
+  const failedSummaries = contractSummaries.filter((item) => item.summary.diagnostics !== "none");
+
+  if (failedSummaries.length === 0) {
+    return "none";
+  }
+
+  return failedSummaries.map((item) => `${item.name}: ${item.summary.diagnostics}`).join(" · ");
 }
 
 function getRecoverySourceSummaryPolicyHealthStatus(
