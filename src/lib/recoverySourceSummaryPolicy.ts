@@ -3,6 +3,8 @@ import type {
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryPolicyHealthGuidance,
+  RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
+  RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
   RecoverySourceSummaryPolicyHealthGuidanceSeverity,
   RecoverySourceSummaryPolicyHealthGuidanceTone,
   RecoverySourceSummaryPolicyHealthStatus,
@@ -86,8 +88,53 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   return {
     status,
     guidance: getRecoverySourceSummaryPolicyHealthGuidance(status),
+    guidanceDisplayContract: summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(),
     policy: recoverySourceSummaryPolicy,
     contract,
+  };
+}
+
+export const recoverySourceSummaryPolicyHealthGuidanceDisplayExamples: RecoverySourceSummaryPolicyHealthGuidanceDisplayExample[] =
+  [
+    {
+      name: "healthy guidance display",
+      input: {
+        severity: "info",
+        tone: "calm",
+        label: "safe to display",
+      },
+      expected: "info · calm · safe to display",
+    },
+    {
+      name: "degraded guidance display",
+      input: {
+        severity: "warning",
+        tone: "cautious",
+        label: "review diagnostics",
+      },
+      expected: "warning · cautious · review diagnostics",
+    },
+  ];
+
+export function checkRecoverySourceSummaryPolicyHealthGuidanceDisplayExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryPolicyHealthGuidanceDisplayExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryPolicyHealthGuidanceDisplayInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["displayText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryPolicyHealthGuidanceDisplayExamples();
+
+  return {
+    total: checks.length,
+    passed: checks.filter((check) => check.passed).length,
+    diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
 }
 
@@ -132,6 +179,12 @@ function formatRecoverySourceSummaryPolicyHealthGuidanceDisplayText(
   label: string,
 ) {
   return `${severity} · ${tone} · ${label}`;
+}
+
+function formatRecoverySourceSummaryPolicyHealthGuidanceDisplayInput(
+  input: RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
+) {
+  return formatRecoverySourceSummaryPolicyHealthGuidanceDisplayText(input.severity, input.tone, input.label);
 }
 
 function getRecoverySourceSummaryPolicyHealthGuidanceSeverity(

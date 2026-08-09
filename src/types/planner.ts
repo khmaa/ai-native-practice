@@ -69,9 +69,22 @@ export type RecoverySourceSummaryPolicyHealthGuidance = {
   message: string;
 };
 
+export type RecoverySourceSummaryPolicyHealthGuidanceDisplayInput = {
+  severity: RecoverySourceSummaryPolicyHealthGuidanceSeverity;
+  tone: RecoverySourceSummaryPolicyHealthGuidanceTone;
+  label: string;
+};
+
+export type RecoverySourceSummaryPolicyHealthGuidanceDisplayExample = {
+  name: string;
+  input: RecoverySourceSummaryPolicyHealthGuidanceDisplayInput;
+  expected: string;
+};
+
 export type RecoverySourceSummaryPolicyHealthSnapshot = {
   status: RecoverySourceSummaryPolicyHealthStatus;
   guidance: RecoverySourceSummaryPolicyHealthGuidance;
+  guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
 };

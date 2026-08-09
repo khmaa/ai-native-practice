@@ -40,6 +40,11 @@ export function PlannerStatePanel({
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
           <small>guidance detail: {policyHealth.guidance.message}</small>
           <small>
+            guidance display examples: {policyHealth.guidanceDisplayContract.passed}/
+            {policyHealth.guidanceDisplayContract.total} passing
+          </small>
+          <small>guidance display diagnostics: {policyHealth.guidanceDisplayContract.diagnostics}</small>
+          <small>
             policy examples: {policyHealth.contract.passed}/{policyHealth.contract.total} passing
           </small>
           <small>policy diagnostics: {policyHealth.contract.diagnostics}</small>
