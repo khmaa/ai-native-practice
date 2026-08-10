@@ -77,6 +77,7 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
   return {
     total: checks.length,
     passed: checks.filter((check) => check.passed).length,
+    displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
 }
@@ -146,6 +147,7 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
   return {
     total: checks.length,
     passed: checks.filter((check) => check.passed).length,
+    displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
 }
@@ -153,11 +155,28 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
 function summarizeRecoverySourceSummaryPolicyContractAggregate(
   contractSummaries: { name: string; summary: RecoverySourceSummaryContractCheckSummary }[],
 ): RecoverySourceSummaryContractCheckSummary {
+  const total = contractSummaries.reduce((currentTotal, item) => currentTotal + item.summary.total, 0);
+  const passed = contractSummaries.reduce((currentPassed, item) => currentPassed + item.summary.passed, 0);
+
   return {
-    total: contractSummaries.reduce((total, item) => total + item.summary.total, 0),
-    passed: contractSummaries.reduce((passed, item) => passed + item.summary.passed, 0),
+    total,
+    passed,
+    displayText: formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total),
     diagnostics: summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(contractSummaries),
   };
+}
+
+function formatRecoverySourceSummaryContractCheckSummaryDisplayText(
+  checks: RecoverySourceSummaryContractCheck[],
+) {
+  return formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(
+    checks.filter((check) => check.passed).length,
+    checks.length,
+  );
+}
+
+function formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed: number, total: number) {
+  return `${passed}/${total} passing`;
 }
 
 function summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(

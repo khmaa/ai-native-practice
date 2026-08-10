@@ -37,20 +37,13 @@ export function PlannerStatePanel({
           <small>
             policy health: {policyHealth.status} · {policyHealth.policy.id}
           </small>
-          <small>
-            contract aggregate: {policyHealth.contractAggregate.passed}/{policyHealth.contractAggregate.total} passing
-          </small>
+          <small>contract aggregate: {policyHealth.contractAggregate.displayText}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.diagnostics}</small>
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
           <small>guidance detail: {policyHealth.guidance.message}</small>
-          <small>
-            guidance display examples: {policyHealth.guidanceDisplayContract.passed}/
-            {policyHealth.guidanceDisplayContract.total} passing
-          </small>
+          <small>guidance display examples: {policyHealth.guidanceDisplayContract.displayText}</small>
           <small>guidance display diagnostics: {policyHealth.guidanceDisplayContract.diagnostics}</small>
-          <small>
-            policy examples: {policyHealth.contract.passed}/{policyHealth.contract.total} passing
-          </small>
+          <small>policy examples: {policyHealth.contract.displayText}</small>
           <small>policy diagnostics: {policyHealth.contract.diagnostics}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
