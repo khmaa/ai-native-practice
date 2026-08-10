@@ -54,6 +54,7 @@ export type RecoverySourceSummaryContractCheck = {
 export type RecoverySourceSummaryContractCheckSummary = {
   total: number;
   passed: number;
+  displayText: string;
   diagnostics: string;
 };
 
