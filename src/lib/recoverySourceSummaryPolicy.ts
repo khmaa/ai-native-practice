@@ -79,6 +79,7 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
 
   return {
     status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
+    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
@@ -152,6 +153,7 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
 
   return {
     status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
+    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
@@ -167,6 +169,7 @@ function summarizeRecoverySourceSummaryPolicyContractAggregate(
 
   return {
     status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
+    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total),
@@ -179,6 +182,14 @@ function getRecoverySourceSummaryContractCheckSummaryStatus(
   total: number,
 ): RecoverySourceSummaryContractCheckSummaryStatus {
   return passed === total ? "passing" : "failing";
+}
+
+function getRecoverySourceSummaryContractCheckSummaryStatusReason(passed: number, total: number) {
+  if (passed === total) {
+    return "all contract examples passed";
+  }
+
+  return `${total - passed} contract example(s) failed`;
 }
 
 function formatRecoverySourceSummaryContractCheckSummaryDisplayText(
