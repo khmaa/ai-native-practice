@@ -51,7 +51,10 @@ export type RecoverySourceSummaryContractCheck = {
   mismatchedFields: string[];
 };
 
+export type RecoverySourceSummaryContractCheckSummaryStatus = "passing" | "failing";
+
 export type RecoverySourceSummaryContractCheckSummary = {
+  status: RecoverySourceSummaryContractCheckSummaryStatus;
   total: number;
   passed: number;
   displayText: string;

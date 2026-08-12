@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryContractCheckSummaryStatus,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
@@ -73,10 +74,13 @@ export function checkRecoverySourceSummaryContractExamples(): RecoverySourceSumm
 
 export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSummaryContractCheckSummary {
   const checks = checkRecoverySourceSummaryContractExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
 
   return {
-    total: checks.length,
-    passed: checks.filter((check) => check.passed).length,
+    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
+    total,
+    passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
@@ -143,10 +147,13 @@ export function checkRecoverySourceSummaryPolicyHealthGuidanceDisplayExamples():
 
 export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
   const checks = checkRecoverySourceSummaryPolicyHealthGuidanceDisplayExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
 
   return {
-    total: checks.length,
-    passed: checks.filter((check) => check.passed).length,
+    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
+    total,
+    passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
     diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
   };
@@ -159,11 +166,19 @@ function summarizeRecoverySourceSummaryPolicyContractAggregate(
   const passed = contractSummaries.reduce((currentPassed, item) => currentPassed + item.summary.passed, 0);
 
   return {
+    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total),
     diagnostics: summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(contractSummaries),
   };
+}
+
+function getRecoverySourceSummaryContractCheckSummaryStatus(
+  passed: number,
+  total: number,
+): RecoverySourceSummaryContractCheckSummaryStatus {
+  return passed === total ? "passing" : "failing";
 }
 
 function formatRecoverySourceSummaryContractCheckSummaryDisplayText(
