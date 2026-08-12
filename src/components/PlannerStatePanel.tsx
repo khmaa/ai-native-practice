@@ -40,6 +40,7 @@ export function PlannerStatePanel({
           <small>
             contract aggregate: {policyHealth.contractAggregate.status} · {policyHealth.contractAggregate.displayText}
           </small>
+          <small>aggregate reason: {policyHealth.contractAggregate.statusReason}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.diagnostics}</small>
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
           <small>guidance detail: {policyHealth.guidance.message}</small>
@@ -47,10 +48,12 @@ export function PlannerStatePanel({
             guidance display examples: {policyHealth.guidanceDisplayContract.status} ·{" "}
             {policyHealth.guidanceDisplayContract.displayText}
           </small>
+          <small>guidance display reason: {policyHealth.guidanceDisplayContract.statusReason}</small>
           <small>guidance display diagnostics: {policyHealth.guidanceDisplayContract.diagnostics}</small>
           <small>
             policy examples: {policyHealth.contract.status} · {policyHealth.contract.displayText}
           </small>
+          <small>policy examples reason: {policyHealth.contract.statusReason}</small>
           <small>policy diagnostics: {policyHealth.contract.diagnostics}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>

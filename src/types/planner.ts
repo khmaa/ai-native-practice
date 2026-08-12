@@ -55,6 +55,7 @@ export type RecoverySourceSummaryContractCheckSummaryStatus = "passing" | "faili
 
 export type RecoverySourceSummaryContractCheckSummary = {
   status: RecoverySourceSummaryContractCheckSummaryStatus;
+  statusReason: string;
   total: number;
   passed: number;
   displayText: string;
