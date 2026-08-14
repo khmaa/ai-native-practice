@@ -76,10 +76,13 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
   const checks = checkRecoverySourceSummaryContractExamples();
   const total = checks.length;
   const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
 
   return {
-    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
-    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
+    status,
+    statusReason,
+    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
@@ -150,10 +153,13 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
   const checks = checkRecoverySourceSummaryPolicyHealthGuidanceDisplayExamples();
   const total = checks.length;
   const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
 
   return {
-    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
-    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
+    status,
+    statusReason,
+    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
@@ -166,10 +172,13 @@ function summarizeRecoverySourceSummaryPolicyContractAggregate(
 ): RecoverySourceSummaryContractCheckSummary {
   const total = contractSummaries.reduce((currentTotal, item) => currentTotal + item.summary.total, 0);
   const passed = contractSummaries.reduce((currentPassed, item) => currentPassed + item.summary.passed, 0);
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
 
   return {
-    status: getRecoverySourceSummaryContractCheckSummaryStatus(passed, total),
-    statusReason: getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total),
+    status,
+    statusReason,
+    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
     total,
     passed,
     displayText: formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total),
@@ -190,6 +199,13 @@ function getRecoverySourceSummaryContractCheckSummaryStatusReason(passed: number
   }
 
   return `${total - passed} contract example(s) failed`;
+}
+
+function formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(
+  status: RecoverySourceSummaryContractCheckSummaryStatus,
+  statusReason: string,
+) {
+  return `${status} · ${statusReason}`;
 }
 
 function formatRecoverySourceSummaryContractCheckSummaryDisplayText(
