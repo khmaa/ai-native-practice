@@ -37,17 +37,19 @@ export function PlannerStatePanel({
           <small>
             policy health: {policyHealth.status} · {policyHealth.policy.id}
           </small>
-          <small>contract aggregate: {policyHealth.contractAggregate.displayText}</small>
-          <small>aggregate status: {policyHealth.contractAggregate.statusDisplayText}</small>
-          <small>aggregate diagnostics: {policyHealth.contractAggregate.diagnostics}</small>
+          <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
+          <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
+          <small>aggregate diagnostics: {policyHealth.contractAggregate.presentation.diagnosticsText}</small>
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
           <small>guidance detail: {policyHealth.guidance.message}</small>
-          <small>guidance display examples: {policyHealth.guidanceDisplayContract.displayText}</small>
-          <small>guidance display status: {policyHealth.guidanceDisplayContract.statusDisplayText}</small>
-          <small>guidance display diagnostics: {policyHealth.guidanceDisplayContract.diagnostics}</small>
-          <small>policy examples: {policyHealth.contract.displayText}</small>
-          <small>policy examples status: {policyHealth.contract.statusDisplayText}</small>
-          <small>policy diagnostics: {policyHealth.contract.diagnostics}</small>
+          <small>guidance display examples: {policyHealth.guidanceDisplayContract.presentation.countText}</small>
+          <small>guidance display status: {policyHealth.guidanceDisplayContract.presentation.statusText}</small>
+          <small>
+            guidance display diagnostics: {policyHealth.guidanceDisplayContract.presentation.diagnosticsText}
+          </small>
+          <small>policy examples: {policyHealth.contract.presentation.countText}</small>
+          <small>policy examples status: {policyHealth.contract.presentation.statusText}</small>
+          <small>policy diagnostics: {policyHealth.contract.presentation.diagnosticsText}</small>
           {recoveryAttempt.sourceRuleId ? <small>source rule: {recoveryAttempt.sourceRuleId}</small> : null}
         </div>
       ) : null}
