@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryContractCheckSummaryPresentation,
   RecoverySourceSummaryContractCheckSummaryStatus,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
@@ -78,15 +79,23 @@ export function summarizeRecoverySourceSummaryContractChecks(): RecoverySourceSu
   const passed = checks.filter((check) => check.passed).length;
   const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
   const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
 
   return {
     status,
     statusReason,
-    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
     total,
     passed,
-    displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
-    diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
+    displayText,
+    diagnostics,
   };
 }
 
@@ -155,15 +164,23 @@ export function summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks(
   const passed = checks.filter((check) => check.passed).length;
   const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
   const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
 
   return {
     status,
     statusReason,
-    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
     total,
     passed,
-    displayText: formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks),
-    diagnostics: summarizeRecoverySourceSummaryContractDiagnostics(checks),
+    displayText,
+    diagnostics,
   };
 }
 
@@ -174,15 +191,35 @@ function summarizeRecoverySourceSummaryPolicyContractAggregate(
   const passed = contractSummaries.reduce((currentPassed, item) => currentPassed + item.summary.passed, 0);
   const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
   const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(contractSummaries);
 
   return {
     status,
     statusReason,
-    statusDisplayText: formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason),
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
     total,
     passed,
-    displayText: formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed, total),
-    diagnostics: summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(contractSummaries),
+    displayText,
+    diagnostics,
+  };
+}
+
+function createRecoverySourceSummaryContractCheckSummaryPresentation(
+  countText: string,
+  statusText: string,
+  diagnosticsText: string,
+): RecoverySourceSummaryContractCheckSummaryPresentation {
+  return {
+    countText,
+    statusText,
+    diagnosticsText,
   };
 }
 
