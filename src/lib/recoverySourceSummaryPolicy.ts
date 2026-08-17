@@ -217,6 +217,7 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
   diagnosticsText: string,
 ): RecoverySourceSummaryContractCheckSummaryPresentation {
   return {
+    intent: "state-panel-contract-review",
     countText,
     statusText,
     diagnosticsText,
