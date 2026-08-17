@@ -218,6 +218,7 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
 ): RecoverySourceSummaryContractCheckSummaryPresentation {
   return {
     intent: "state-panel-contract-review",
+    intentDescription: "Summarizes contract checks for review inside the state panel.",
     countText,
     statusText,
     diagnosticsText,

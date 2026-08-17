@@ -56,6 +56,7 @@ export type RecoverySourceSummaryContractCheckSummaryPresentationIntent = "state
 
 export type RecoverySourceSummaryContractCheckSummaryPresentation = {
   intent: RecoverySourceSummaryContractCheckSummaryPresentationIntent;
+  intentDescription: string;
   countText: string;
   statusText: string;
   diagnosticsText: string;

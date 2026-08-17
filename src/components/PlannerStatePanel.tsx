@@ -38,6 +38,7 @@ export function PlannerStatePanel({
             policy health: {policyHealth.status} · {policyHealth.policy.id}
           </small>
           <small>presentation intent: {policyHealth.contractAggregate.presentation.intent}</small>
+          <small>presentation purpose: {policyHealth.contractAggregate.presentation.intentDescription}</small>
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.presentation.diagnosticsText}</small>
