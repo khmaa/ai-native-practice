@@ -53,10 +53,12 @@ export type RecoverySourceSummaryContractCheck = {
 
 export type RecoverySourceSummaryContractCheckSummaryStatus = "passing" | "failing";
 export type RecoverySourceSummaryContractCheckSummaryPresentationIntent = "state-panel-contract-review";
+export type RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel = "compact" | "detailed";
 
 export type RecoverySourceSummaryContractCheckSummaryPresentation = {
   intent: RecoverySourceSummaryContractCheckSummaryPresentationIntent;
   intentDescription: string;
+  detailLevel: RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel;
   countText: string;
   statusText: string;
   diagnosticsText: string;

@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel,
   RecoverySourceSummaryContractCheckSummaryPresentation,
   RecoverySourceSummaryContractCheckSummaryStatus,
   RecoverySourceSummaryPolicyHealthGuidance,
@@ -219,10 +220,15 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
   return {
     intent: "state-panel-contract-review",
     intentDescription: "Summarizes contract checks for review inside the state panel.",
+    detailLevel: getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(),
     countText,
     statusText,
     diagnosticsText,
   };
+}
+
+function getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(): RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel {
+  return "detailed";
 }
 
 function getRecoverySourceSummaryContractCheckSummaryStatus(
