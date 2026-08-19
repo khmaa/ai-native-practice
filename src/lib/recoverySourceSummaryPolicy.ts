@@ -2,6 +2,7 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractCheckSummary,
+  RecoverySourceSummaryContractCheckSummaryPresentationAudience,
   RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel,
   RecoverySourceSummaryContractCheckSummaryPresentation,
   RecoverySourceSummaryContractCheckSummaryStatus,
@@ -221,6 +222,7 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
     intent: "state-panel-contract-review",
     intentDescription: "Summarizes contract checks for review inside the state panel.",
     detailLevel: getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(),
+    audience: getRecoverySourceSummaryContractCheckSummaryPresentationAudience(),
     countText,
     statusText,
     diagnosticsText,
@@ -229,6 +231,10 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
 
 function getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(): RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel {
   return "detailed";
+}
+
+function getRecoverySourceSummaryContractCheckSummaryPresentationAudience(): RecoverySourceSummaryContractCheckSummaryPresentationAudience {
+  return "developer-learner";
 }
 
 function getRecoverySourceSummaryContractCheckSummaryStatus(
