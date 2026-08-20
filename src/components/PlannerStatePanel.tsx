@@ -41,6 +41,7 @@ export function PlannerStatePanel({
           <small>presentation purpose: {policyHealth.contractAggregate.presentation.intentDescription}</small>
           <small>presentation detail: {policyHealth.contractAggregate.presentation.detailLevel}</small>
           <small>presentation audience: {policyHealth.contractAggregate.presentation.audience}</small>
+          <small>audience rationale: {policyHealth.contractAggregate.presentation.audienceRationale}</small>
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.presentation.diagnosticsText}</small>
