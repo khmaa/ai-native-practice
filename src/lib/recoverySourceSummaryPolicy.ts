@@ -223,6 +223,7 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
     intentDescription: "Summarizes contract checks for review inside the state panel.",
     detailLevel: getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(),
     audience: getRecoverySourceSummaryContractCheckSummaryPresentationAudience(),
+    audienceRationale: "Detailed policy contract metadata helps learners inspect how AI UI trust signals are assembled.",
     countText,
     statusText,
     diagnosticsText,

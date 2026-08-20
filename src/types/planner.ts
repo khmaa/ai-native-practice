@@ -61,6 +61,7 @@ export type RecoverySourceSummaryContractCheckSummaryPresentation = {
   intentDescription: string;
   detailLevel: RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel;
   audience: RecoverySourceSummaryContractCheckSummaryPresentationAudience;
+  audienceRationale: string;
   countText: string;
   statusText: string;
   diagnosticsText: string;
