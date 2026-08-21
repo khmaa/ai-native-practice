@@ -218,16 +218,33 @@ function createRecoverySourceSummaryContractCheckSummaryPresentation(
   statusText: string,
   diagnosticsText: string,
 ): RecoverySourceSummaryContractCheckSummaryPresentation {
+  const intent = "state-panel-contract-review";
+  const detailLevel = getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel();
+  const audience = getRecoverySourceSummaryContractCheckSummaryPresentationAudience();
+
   return {
-    intent: "state-panel-contract-review",
+    intent,
     intentDescription: "Summarizes contract checks for review inside the state panel.",
-    detailLevel: getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(),
-    audience: getRecoverySourceSummaryContractCheckSummaryPresentationAudience(),
+    detailLevel,
+    audience,
     audienceRationale: "Detailed policy contract metadata helps learners inspect how AI UI trust signals are assembled.",
+    metadataText: formatRecoverySourceSummaryContractCheckSummaryPresentationMetadataText(
+      intent,
+      detailLevel,
+      audience,
+    ),
     countText,
     statusText,
     diagnosticsText,
   };
+}
+
+function formatRecoverySourceSummaryContractCheckSummaryPresentationMetadataText(
+  intent: RecoverySourceSummaryContractCheckSummaryPresentation["intent"],
+  detailLevel: RecoverySourceSummaryContractCheckSummaryPresentation["detailLevel"],
+  audience: RecoverySourceSummaryContractCheckSummaryPresentation["audience"],
+) {
+  return `${intent} · ${detailLevel} · ${audience}`;
 }
 
 function getRecoverySourceSummaryContractCheckSummaryPresentationDetailLevel(): RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel {

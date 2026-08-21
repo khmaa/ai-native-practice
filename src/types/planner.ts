@@ -62,6 +62,7 @@ export type RecoverySourceSummaryContractCheckSummaryPresentation = {
   detailLevel: RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel;
   audience: RecoverySourceSummaryContractCheckSummaryPresentationAudience;
   audienceRationale: string;
+  metadataText: string;
   countText: string;
   statusText: string;
   diagnosticsText: string;
