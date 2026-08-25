@@ -40,6 +40,9 @@ export function PlannerStatePanel({
           <small>presentation metadata: {policyHealth.contractAggregate.presentation.metadataText}</small>
           <small>presentation purpose: {policyHealth.contractAggregate.presentation.intentDescription}</small>
           <small>audience rationale: {policyHealth.contractAggregate.presentation.audienceRationale}</small>
+          <small>metadata examples: {policyHealth.presentationMetadataContract.presentation.countText}</small>
+          <small>metadata status: {policyHealth.presentationMetadataContract.presentation.statusText}</small>
+          <small>metadata diagnostics: {policyHealth.presentationMetadataContract.presentation.diagnosticsText}</small>
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.presentation.diagnosticsText}</small>

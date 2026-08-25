@@ -68,6 +68,18 @@ export type RecoverySourceSummaryContractCheckSummaryPresentation = {
   diagnosticsText: string;
 };
 
+export type RecoverySourceSummaryContractCheckSummaryPresentationMetadataInput = {
+  intent: RecoverySourceSummaryContractCheckSummaryPresentationIntent;
+  detailLevel: RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel;
+  audience: RecoverySourceSummaryContractCheckSummaryPresentationAudience;
+};
+
+export type RecoverySourceSummaryContractCheckSummaryPresentationMetadataExample = {
+  name: string;
+  input: RecoverySourceSummaryContractCheckSummaryPresentationMetadataInput;
+  expected: string;
+};
+
 export type RecoverySourceSummaryContractCheckSummary = {
   status: RecoverySourceSummaryContractCheckSummaryStatus;
   statusReason: string;
@@ -107,6 +119,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   status: RecoverySourceSummaryPolicyHealthStatus;
   guidance: RecoverySourceSummaryPolicyHealthGuidance;
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
+  presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
