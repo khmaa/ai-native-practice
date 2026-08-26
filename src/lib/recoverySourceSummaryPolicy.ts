@@ -1,6 +1,7 @@
 import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
+  RecoverySourceSummaryContractGroup,
   RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryContractCheckSummaryPresentationAudience,
   RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel,
@@ -107,20 +108,24 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contract = summarizeRecoverySourceSummaryContractChecks();
   const guidanceDisplayContract = summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks();
   const presentationMetadataContract = summarizeRecoverySourceSummaryPresentationMetadataChecks();
-  const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate([
+  const contractGroups: RecoverySourceSummaryContractGroup[] = [
     {
-      name: "summary",
+      id: "summary",
+      label: "summary contract",
       summary: contract,
     },
     {
-      name: "guidance display",
+      id: "guidance-display",
+      label: "guidance display contract",
       summary: guidanceDisplayContract,
     },
     {
-      name: "presentation metadata",
+      id: "presentation-metadata",
+      label: "presentation metadata contract",
       summary: presentationMetadataContract,
     },
-  ]);
+  ];
+  const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
   return {
@@ -128,6 +133,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     guidance: getRecoverySourceSummaryPolicyHealthGuidance(status),
     guidanceDisplayContract,
     presentationMetadataContract,
+    contractGroups,
     contractAggregate,
     policy: recoverySourceSummaryPolicy,
     contract,
@@ -246,7 +252,7 @@ export function summarizeRecoverySourceSummaryPresentationMetadataChecks(): Reco
 }
 
 function summarizeRecoverySourceSummaryPolicyContractAggregate(
-  contractSummaries: { name: string; summary: RecoverySourceSummaryContractCheckSummary }[],
+  contractSummaries: RecoverySourceSummaryContractGroup[],
 ): RecoverySourceSummaryContractCheckSummary {
   const total = contractSummaries.reduce((currentTotal, item) => currentTotal + item.summary.total, 0);
   const passed = contractSummaries.reduce((currentPassed, item) => currentPassed + item.summary.passed, 0);
@@ -360,7 +366,7 @@ function formatRecoverySourceSummaryContractCheckSummaryCountDisplayText(passed:
 }
 
 function summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(
-  contractSummaries: { name: string; summary: RecoverySourceSummaryContractCheckSummary }[],
+  contractSummaries: RecoverySourceSummaryContractGroup[],
 ) {
   const failedSummaries = contractSummaries.filter((item) => item.summary.diagnostics !== "none");
 
@@ -368,7 +374,7 @@ function summarizeRecoverySourceSummaryPolicyContractAggregateDiagnostics(
     return "none";
   }
 
-  return failedSummaries.map((item) => `${item.name}: ${item.summary.diagnostics}`).join(" · ");
+  return failedSummaries.map((item) => `${item.label}: ${item.summary.diagnostics}`).join(" · ");
 }
 
 function getRecoverySourceSummaryPolicyHealthStatus(

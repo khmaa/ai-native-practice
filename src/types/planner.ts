@@ -91,6 +91,14 @@ export type RecoverySourceSummaryContractCheckSummary = {
   diagnostics: string;
 };
 
+export type RecoverySourceSummaryContractGroupId = "summary" | "guidance-display" | "presentation-metadata";
+
+export type RecoverySourceSummaryContractGroup = {
+  id: RecoverySourceSummaryContractGroupId;
+  label: string;
+  summary: RecoverySourceSummaryContractCheckSummary;
+};
+
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
 export type RecoverySourceSummaryPolicyHealthGuidanceSeverity = "info" | "warning";
 export type RecoverySourceSummaryPolicyHealthGuidanceTone = "calm" | "cautious";
@@ -120,6 +128,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   guidance: RecoverySourceSummaryPolicyHealthGuidance;
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
+  contractGroups: RecoverySourceSummaryContractGroup[];
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
