@@ -45,7 +45,7 @@ export function PlannerStatePanel({
           <small>metadata diagnostics: {policyHealth.presentationMetadataContract.presentation.diagnosticsText}</small>
           <small>
             contract groups:{" "}
-            {policyHealth.contractGroups.map((group) => `${group.id}:${group.summary.status}`).join(", ")}
+            {policyHealth.contractGroups.map((group) => group.displayText).join(", ")}
           </small>
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>

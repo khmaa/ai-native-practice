@@ -109,21 +109,17 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const guidanceDisplayContract = summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks();
   const presentationMetadataContract = summarizeRecoverySourceSummaryPresentationMetadataChecks();
   const contractGroups: RecoverySourceSummaryContractGroup[] = [
-    {
-      id: "summary",
-      label: "summary contract",
-      summary: contract,
-    },
-    {
-      id: "guidance-display",
-      label: "guidance display contract",
-      summary: guidanceDisplayContract,
-    },
-    {
-      id: "presentation-metadata",
-      label: "presentation metadata contract",
-      summary: presentationMetadataContract,
-    },
+    createRecoverySourceSummaryContractGroup("summary", "summary contract", contract),
+    createRecoverySourceSummaryContractGroup(
+      "guidance-display",
+      "guidance display contract",
+      guidanceDisplayContract,
+    ),
+    createRecoverySourceSummaryContractGroup(
+      "presentation-metadata",
+      "presentation metadata contract",
+      presentationMetadataContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
@@ -138,6 +134,26 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     policy: recoverySourceSummaryPolicy,
     contract,
   };
+}
+
+function createRecoverySourceSummaryContractGroup(
+  id: RecoverySourceSummaryContractGroup["id"],
+  label: string,
+  summary: RecoverySourceSummaryContractCheckSummary,
+): RecoverySourceSummaryContractGroup {
+  return {
+    id,
+    label,
+    displayText: formatRecoverySourceSummaryContractGroupDisplayText(id, summary.status),
+    summary,
+  };
+}
+
+function formatRecoverySourceSummaryContractGroupDisplayText(
+  id: RecoverySourceSummaryContractGroup["id"],
+  status: RecoverySourceSummaryContractCheckSummary["status"],
+) {
+  return `${id}:${status}`;
 }
 
 export const recoverySourceSummaryPolicyHealthGuidanceDisplayExamples: RecoverySourceSummaryPolicyHealthGuidanceDisplayExample[] =
