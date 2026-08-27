@@ -96,6 +96,7 @@ export type RecoverySourceSummaryContractGroupId = "summary" | "guidance-display
 export type RecoverySourceSummaryContractGroup = {
   id: RecoverySourceSummaryContractGroupId;
   label: string;
+  displayText: string;
   summary: RecoverySourceSummaryContractCheckSummary;
 };
 
