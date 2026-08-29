@@ -130,6 +130,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
+  contractGroupsDisplayText: string;
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;

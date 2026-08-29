@@ -130,6 +130,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     guidanceDisplayContract,
     presentationMetadataContract,
     contractGroups,
+    contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
     contractAggregate,
     policy: recoverySourceSummaryPolicy,
     contract,
@@ -154,6 +155,10 @@ function formatRecoverySourceSummaryContractGroupDisplayText(
   status: RecoverySourceSummaryContractCheckSummary["status"],
 ) {
   return `${id}:${status}`;
+}
+
+function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySourceSummaryContractGroup[]) {
+  return groups.map((group) => group.displayText).join(", ");
 }
 
 export const recoverySourceSummaryPolicyHealthGuidanceDisplayExamples: RecoverySourceSummaryPolicyHealthGuidanceDisplayExample[] =
