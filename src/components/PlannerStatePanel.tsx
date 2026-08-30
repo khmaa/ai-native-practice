@@ -43,6 +43,11 @@ export function PlannerStatePanel({
           <small>metadata examples: {policyHealth.presentationMetadataContract.presentation.countText}</small>
           <small>metadata status: {policyHealth.presentationMetadataContract.presentation.statusText}</small>
           <small>metadata diagnostics: {policyHealth.presentationMetadataContract.presentation.diagnosticsText}</small>
+          <small>group display examples: {policyHealth.contractGroupsDisplayContract.presentation.countText}</small>
+          <small>group display status: {policyHealth.contractGroupsDisplayContract.presentation.statusText}</small>
+          <small>
+            group display diagnostics: {policyHealth.contractGroupsDisplayContract.presentation.diagnosticsText}
+          </small>
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
