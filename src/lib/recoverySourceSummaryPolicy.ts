@@ -2,6 +2,8 @@ import type {
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractGroup,
+  RecoverySourceSummaryContractGroupsDisplayExample,
+  RecoverySourceSummaryContractGroupsDisplayInput,
   RecoverySourceSummaryContractCheckSummary,
   RecoverySourceSummaryContractCheckSummaryPresentationAudience,
   RecoverySourceSummaryContractCheckSummaryPresentationDetailLevel,
@@ -108,6 +110,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contract = summarizeRecoverySourceSummaryContractChecks();
   const guidanceDisplayContract = summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks();
   const presentationMetadataContract = summarizeRecoverySourceSummaryPresentationMetadataChecks();
+  const contractGroupsDisplayContract = summarizeRecoverySourceSummaryContractGroupsDisplayChecks();
   const contractGroups: RecoverySourceSummaryContractGroup[] = [
     createRecoverySourceSummaryContractGroup("summary", "summary contract", contract),
     createRecoverySourceSummaryContractGroup(
@@ -120,6 +123,11 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
       "presentation metadata contract",
       presentationMetadataContract,
     ),
+    createRecoverySourceSummaryContractGroup(
+      "contract-groups-display",
+      "contract groups display contract",
+      contractGroupsDisplayContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
@@ -131,6 +139,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     presentationMetadataContract,
     contractGroups,
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
+    contractGroupsDisplayContract,
     contractAggregate,
     policy: recoverySourceSummaryPolicy,
     contract,
@@ -158,7 +167,70 @@ function formatRecoverySourceSummaryContractGroupDisplayText(
 }
 
 function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySourceSummaryContractGroup[]) {
-  return groups.map((group) => group.displayText).join(", ");
+  return formatRecoverySourceSummaryContractGroupsDisplayInput({
+    groupDisplayTexts: groups.map((group) => group.displayText),
+  });
+}
+
+export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceSummaryContractGroupsDisplayExample[] =
+  [
+    {
+      name: "all contract groups passing",
+      input: {
+        groupDisplayTexts: [
+          "summary:passing",
+          "guidance-display:passing",
+          "presentation-metadata:passing",
+          "contract-groups-display:passing",
+        ],
+      },
+      expected:
+        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing",
+    },
+  ];
+
+export function checkRecoverySourceSummaryContractGroupsDisplayExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractGroupsDisplayExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryContractGroupsDisplayInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["contractGroupsDisplayText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryContractGroupsDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractGroupsDisplayExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
+
+  return {
+    status,
+    statusReason,
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
+    total,
+    passed,
+    displayText,
+    diagnostics,
+  };
+}
+
+function formatRecoverySourceSummaryContractGroupsDisplayInput(
+  input: RecoverySourceSummaryContractGroupsDisplayInput,
+) {
+  return input.groupDisplayTexts.join(", ");
 }
 
 export const recoverySourceSummaryPolicyHealthGuidanceDisplayExamples: RecoverySourceSummaryPolicyHealthGuidanceDisplayExample[] =
