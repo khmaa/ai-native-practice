@@ -114,6 +114,12 @@ export type RecoverySourceSummaryContractGroupsDisplayExample = {
   expected: string;
 };
 
+export type RecoverySourceSummaryContractAggregateCoverage = {
+  groupCount: number;
+  displayText: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
 export type RecoverySourceSummaryPolicyHealthGuidanceSeverity = "info" | "warning";
 export type RecoverySourceSummaryPolicyHealthGuidanceTone = "calm" | "cautious";
@@ -147,6 +153,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   contractGroupsDisplayText: string;
   contractGroupsDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
+  contractAggregateCoverage: RecoverySourceSummaryContractAggregateCoverage;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
 };
