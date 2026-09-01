@@ -1,4 +1,5 @@
 import type {
+  RecoverySourceSummaryContractAggregateCoverage,
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractGroup,
@@ -130,6 +131,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
+  const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
   return {
@@ -141,6 +143,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
     contractGroupsDisplayContract,
     contractAggregate,
+    contractAggregateCoverage,
     policy: recoverySourceSummaryPolicy,
     contract,
   };
@@ -170,6 +173,20 @@ function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySo
   return formatRecoverySourceSummaryContractGroupsDisplayInput({
     groupDisplayTexts: groups.map((group) => group.displayText),
   });
+}
+
+function createRecoverySourceSummaryContractAggregateCoverage(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractAggregateCoverage {
+  return {
+    groupCount: groups.length,
+    displayText: formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groups.length),
+    rationale: "Shows how many contract groups are included in the policy health aggregate.",
+  };
+}
+
+function formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groupCount: number) {
+  return `${groupCount} contract group(s) covered`;
 }
 
 export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceSummaryContractGroupsDisplayExample[] =
