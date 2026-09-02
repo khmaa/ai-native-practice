@@ -1,5 +1,7 @@
 import type {
   RecoverySourceSummaryContractAggregateCoverage,
+  RecoverySourceSummaryContractAggregateCoverageDisplayExample,
+  RecoverySourceSummaryContractAggregateCoverageDisplayInput,
   RecoverySourceSummaryContractCheck,
   RecoverySourceSummaryContractExample,
   RecoverySourceSummaryContractGroup,
@@ -112,6 +114,8 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const guidanceDisplayContract = summarizeRecoverySourceSummaryPolicyHealthGuidanceDisplayChecks();
   const presentationMetadataContract = summarizeRecoverySourceSummaryPresentationMetadataChecks();
   const contractGroupsDisplayContract = summarizeRecoverySourceSummaryContractGroupsDisplayChecks();
+  const contractAggregateCoverageDisplayContract =
+    summarizeRecoverySourceSummaryContractAggregateCoverageDisplayChecks();
   const contractGroups: RecoverySourceSummaryContractGroup[] = [
     createRecoverySourceSummaryContractGroup("summary", "summary contract", contract),
     createRecoverySourceSummaryContractGroup(
@@ -129,6 +133,11 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
       "contract groups display contract",
       contractGroupsDisplayContract,
     ),
+    createRecoverySourceSummaryContractGroup(
+      "aggregate-coverage-display",
+      "aggregate coverage display contract",
+      contractAggregateCoverageDisplayContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
@@ -144,6 +153,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractGroupsDisplayContract,
     contractAggregate,
     contractAggregateCoverage,
+    contractAggregateCoverageDisplayContract,
     policy: recoverySourceSummaryPolicy,
     contract,
   };
@@ -189,6 +199,61 @@ function formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groupCo
   return `${groupCount} contract group(s) covered`;
 }
 
+export const recoverySourceSummaryContractAggregateCoverageDisplayExamples: RecoverySourceSummaryContractAggregateCoverageDisplayExample[] =
+  [
+    {
+      name: "four covered contract groups",
+      input: {
+        groupCount: 4,
+      },
+      expected: "4 contract group(s) covered",
+    },
+  ];
+
+export function checkRecoverySourceSummaryContractAggregateCoverageDisplayExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractAggregateCoverageDisplayExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryContractAggregateCoverageDisplayInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["contractAggregateCoverageDisplayText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryContractAggregateCoverageDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractAggregateCoverageDisplayExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
+
+  return {
+    status,
+    statusReason,
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
+    total,
+    passed,
+    displayText,
+    diagnostics,
+  };
+}
+
+function formatRecoverySourceSummaryContractAggregateCoverageDisplayInput(
+  input: RecoverySourceSummaryContractAggregateCoverageDisplayInput,
+) {
+  return formatRecoverySourceSummaryContractAggregateCoverageDisplayText(input.groupCount);
+}
+
 export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceSummaryContractGroupsDisplayExample[] =
   [
     {
@@ -199,10 +264,11 @@ export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceS
           "guidance-display:passing",
           "presentation-metadata:passing",
           "contract-groups-display:passing",
+          "aggregate-coverage-display:passing",
         ],
       },
       expected:
-        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing",
+        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing",
     },
   ];
 

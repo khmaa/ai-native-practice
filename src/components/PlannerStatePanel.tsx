@@ -52,6 +52,14 @@ export function PlannerStatePanel({
           <small>contract aggregate: {policyHealth.contractAggregate.presentation.countText}</small>
           <small>aggregate coverage: {policyHealth.contractAggregateCoverage.displayText}</small>
           <small>coverage rationale: {policyHealth.contractAggregateCoverage.rationale}</small>
+          <small>
+            coverage display examples: {policyHealth.contractAggregateCoverageDisplayContract.presentation.countText}
+          </small>
+          <small>coverage display status: {policyHealth.contractAggregateCoverageDisplayContract.presentation.statusText}</small>
+          <small>
+            coverage display diagnostics:{" "}
+            {policyHealth.contractAggregateCoverageDisplayContract.presentation.diagnosticsText}
+          </small>
           <small>aggregate status: {policyHealth.contractAggregate.presentation.statusText}</small>
           <small>aggregate diagnostics: {policyHealth.contractAggregate.presentation.diagnosticsText}</small>
           <small>policy guidance: {policyHealth.guidance.displayText}</small>
