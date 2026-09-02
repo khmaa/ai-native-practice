@@ -95,7 +95,8 @@ export type RecoverySourceSummaryContractGroupId =
   | "summary"
   | "guidance-display"
   | "presentation-metadata"
-  | "contract-groups-display";
+  | "contract-groups-display"
+  | "aggregate-coverage-display";
 
 export type RecoverySourceSummaryContractGroup = {
   id: RecoverySourceSummaryContractGroupId;
@@ -118,6 +119,16 @@ export type RecoverySourceSummaryContractAggregateCoverage = {
   groupCount: number;
   displayText: string;
   rationale: string;
+};
+
+export type RecoverySourceSummaryContractAggregateCoverageDisplayInput = {
+  groupCount: number;
+};
+
+export type RecoverySourceSummaryContractAggregateCoverageDisplayExample = {
+  name: string;
+  input: RecoverySourceSummaryContractAggregateCoverageDisplayInput;
+  expected: string;
 };
 
 export type RecoverySourceSummaryPolicyHealthStatus = "healthy" | "degraded";
@@ -154,6 +165,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   contractGroupsDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
   contractAggregateCoverage: RecoverySourceSummaryContractAggregateCoverage;
+  contractAggregateCoverageDisplayContract: RecoverySourceSummaryContractCheckSummary;
   policy: RecoverySourceSummaryPolicySnapshot;
   contract: RecoverySourceSummaryContractCheckSummary;
 };
