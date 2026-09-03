@@ -14,6 +14,7 @@ import type {
   RecoverySourceSummaryContractCheckSummaryPresentationMetadataExample,
   RecoverySourceSummaryContractCheckSummaryPresentationMetadataInput,
   RecoverySourceSummaryContractCheckSummaryStatus,
+  RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
@@ -141,6 +142,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
+  const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
   return {
@@ -149,6 +151,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     guidanceDisplayContract,
     presentationMetadataContract,
     contractGroups,
+    contractInventory,
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
     contractGroupsDisplayContract,
     contractAggregate,
@@ -183,6 +186,26 @@ function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySo
   return formatRecoverySourceSummaryContractGroupsDisplayInput({
     groupDisplayTexts: groups.map((group) => group.displayText),
   });
+}
+
+function createRecoverySourceSummaryContractInventory(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractInventory {
+  const latestGroup = groups[groups.length - 1];
+
+  return {
+    groupCount: groups.length,
+    latestGroupId: latestGroup.id,
+    displayText: formatRecoverySourceSummaryContractInventoryDisplayText(groups.length, latestGroup.id),
+    rationale: "Highlights the current contract group inventory before reading aggregate diagnostics.",
+  };
+}
+
+function formatRecoverySourceSummaryContractInventoryDisplayText(
+  groupCount: number,
+  latestGroupId: RecoverySourceSummaryContractGroup["id"],
+) {
+  return `${groupCount} contract groups · latest ${latestGroupId}`;
 }
 
 function createRecoverySourceSummaryContractAggregateCoverage(

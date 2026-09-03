@@ -105,6 +105,13 @@ export type RecoverySourceSummaryContractGroup = {
   summary: RecoverySourceSummaryContractCheckSummary;
 };
 
+export type RecoverySourceSummaryContractInventory = {
+  groupCount: number;
+  latestGroupId: RecoverySourceSummaryContractGroupId;
+  displayText: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryContractGroupsDisplayInput = {
   groupDisplayTexts: string[];
 };
@@ -161,6 +168,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
+  contractInventory: RecoverySourceSummaryContractInventory;
   contractGroupsDisplayText: string;
   contractGroupsDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractAggregate: RecoverySourceSummaryContractCheckSummary;
