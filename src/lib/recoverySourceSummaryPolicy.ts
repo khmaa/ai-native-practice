@@ -17,6 +17,8 @@ import type {
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
   RecoverySourceSummaryContractInventoryDisplayInput,
+  RecoverySourceSummaryContractInventorySafety,
+  RecoverySourceSummaryContractInventorySafetyStatus,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
@@ -150,6 +152,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
+  const contractInventorySafety = createRecoverySourceSummaryContractInventorySafety(contractGroups);
   const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
@@ -160,6 +163,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     presentationMetadataContract,
     contractGroups,
     contractInventory,
+    contractInventorySafety,
     contractInventoryDisplayContract,
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
     contractGroupsDisplayContract,
@@ -200,7 +204,7 @@ function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySo
 function createRecoverySourceSummaryContractInventory(
   groups: RecoverySourceSummaryContractGroup[],
 ): RecoverySourceSummaryContractInventory {
-  const latestGroup = groups[groups.length - 1];
+  const latestGroup = getLatestRecoverySourceSummaryContractGroup(groups);
 
   return {
     groupCount: groups.length,
@@ -208,6 +212,43 @@ function createRecoverySourceSummaryContractInventory(
     displayText: formatRecoverySourceSummaryContractInventoryDisplayText(groups.length, latestGroup.id),
     rationale: "Highlights the current contract group inventory before reading aggregate diagnostics.",
   };
+}
+
+function getLatestRecoverySourceSummaryContractGroup(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractGroup {
+  const latestGroup = groups[groups.length - 1];
+
+  if (!latestGroup) {
+    throw new Error("Contract inventory requires at least one contract group.");
+  }
+
+  return latestGroup;
+}
+
+function createRecoverySourceSummaryContractInventorySafety(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractInventorySafety {
+  const status = getRecoverySourceSummaryContractInventorySafetyStatus(groups);
+
+  return {
+    status,
+    displayText: formatRecoverySourceSummaryContractInventorySafetyDisplayText(status, groups.length),
+    rationale: "Confirms that the inventory has at least one contract group before exposing the latest group.",
+  };
+}
+
+function getRecoverySourceSummaryContractInventorySafetyStatus(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractInventorySafetyStatus {
+  return groups.length > 0 ? "safe" : "empty";
+}
+
+function formatRecoverySourceSummaryContractInventorySafetyDisplayText(
+  status: RecoverySourceSummaryContractInventorySafetyStatus,
+  groupCount: number,
+) {
+  return `${status} · ${groupCount} group(s) available`;
 }
 
 function formatRecoverySourceSummaryContractInventoryDisplayText(
