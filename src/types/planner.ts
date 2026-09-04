@@ -113,6 +113,14 @@ export type RecoverySourceSummaryContractInventory = {
   rationale: string;
 };
 
+export type RecoverySourceSummaryContractInventorySafetyStatus = "safe" | "empty";
+
+export type RecoverySourceSummaryContractInventorySafety = {
+  status: RecoverySourceSummaryContractInventorySafetyStatus;
+  displayText: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryContractInventoryDisplayInput = {
   groupCount: number;
   latestGroupId: RecoverySourceSummaryContractGroupId;
@@ -181,6 +189,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
   contractInventory: RecoverySourceSummaryContractInventory;
+  contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
   contractInventoryDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractGroupsDisplayText: string;
   contractGroupsDisplayContract: RecoverySourceSummaryContractCheckSummary;

@@ -49,6 +49,8 @@ export function PlannerStatePanel({
             group display diagnostics: {policyHealth.contractGroupsDisplayContract.presentation.diagnosticsText}
           </small>
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
+          <small>inventory safety: {policyHealth.contractInventorySafety.displayText}</small>
+          <small>inventory safety rationale: {policyHealth.contractInventorySafety.rationale}</small>
           <small>contract inventory: {policyHealth.contractInventory.displayText}</small>
           <small>inventory rationale: {policyHealth.contractInventory.rationale}</small>
           <small>inventory display examples: {policyHealth.contractInventoryDisplayContract.presentation.countText}</small>
