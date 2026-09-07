@@ -122,6 +122,12 @@ export type RecoverySourceSummaryContractInventorySafety = {
   rationale: string;
 };
 
+export type RecoverySourceSummaryContractReviewOrder = {
+  groupIds: RecoverySourceSummaryContractGroupId[];
+  displayText: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryContractInventorySafetyDisplayInput = {
   status: RecoverySourceSummaryContractInventorySafetyStatus;
   groupCount: number;
@@ -202,6 +208,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   contractGroups: RecoverySourceSummaryContractGroup[];
   contractInventory: RecoverySourceSummaryContractInventory;
   contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
+  contractReviewOrder: RecoverySourceSummaryContractReviewOrder;
   contractInventorySafetyDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractInventoryDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractGroupsDisplayText: string;
