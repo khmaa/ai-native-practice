@@ -22,6 +22,8 @@ import type {
   RecoverySourceSummaryContractInventorySafetyDisplayInput,
   RecoverySourceSummaryContractInventorySafetyStatus,
   RecoverySourceSummaryContractReviewOrder,
+  RecoverySourceSummaryContractReviewOrderDisplayExample,
+  RecoverySourceSummaryContractReviewOrderDisplayInput,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
@@ -127,6 +129,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contractInventoryDisplayContract = summarizeRecoverySourceSummaryContractInventoryDisplayChecks();
   const contractInventorySafetyDisplayContract =
     summarizeRecoverySourceSummaryContractInventorySafetyDisplayChecks();
+  const contractReviewOrderDisplayContract = summarizeRecoverySourceSummaryContractReviewOrderDisplayChecks();
   const contractGroups: RecoverySourceSummaryContractGroup[] = [
     createRecoverySourceSummaryContractGroup("summary", "summary contract", contract),
     createRecoverySourceSummaryContractGroup(
@@ -159,6 +162,11 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
       "inventory safety display contract",
       contractInventorySafetyDisplayContract,
     ),
+    createRecoverySourceSummaryContractGroup(
+      "review-order-display",
+      "review order display contract",
+      contractReviewOrderDisplayContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
@@ -176,6 +184,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractInventory,
     contractInventorySafety,
     contractReviewOrder,
+    contractReviewOrderDisplayContract,
     contractInventorySafetyDisplayContract,
     contractInventoryDisplayContract,
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
@@ -232,6 +241,71 @@ function formatRecoverySourceSummaryContractReviewOrderDisplayText(
   return groupIds.join(" -> ");
 }
 
+export const recoverySourceSummaryContractReviewOrderDisplayExamples: RecoverySourceSummaryContractReviewOrderDisplayExample[] =
+  [
+    {
+      name: "eight contract groups in review order",
+      input: {
+        groupIds: [
+          "summary",
+          "guidance-display",
+          "presentation-metadata",
+          "contract-groups-display",
+          "aggregate-coverage-display",
+          "inventory-display",
+          "inventory-safety-display",
+          "review-order-display",
+        ],
+      },
+      expected:
+        "summary -> guidance-display -> presentation-metadata -> contract-groups-display -> aggregate-coverage-display -> inventory-display -> inventory-safety-display -> review-order-display",
+    },
+  ];
+
+export function checkRecoverySourceSummaryContractReviewOrderDisplayExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractReviewOrderDisplayExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryContractReviewOrderDisplayInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["contractReviewOrderDisplayText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryContractReviewOrderDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractReviewOrderDisplayExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
+
+  return {
+    status,
+    statusReason,
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
+    total,
+    passed,
+    displayText,
+    diagnostics,
+  };
+}
+
+function formatRecoverySourceSummaryContractReviewOrderDisplayInput(
+  input: RecoverySourceSummaryContractReviewOrderDisplayInput,
+) {
+  return formatRecoverySourceSummaryContractReviewOrderDisplayText(input.groupIds);
+}
+
 function createRecoverySourceSummaryContractInventory(
   groups: RecoverySourceSummaryContractGroup[],
 ): RecoverySourceSummaryContractInventory {
@@ -285,12 +359,12 @@ function formatRecoverySourceSummaryContractInventorySafetyDisplayText(
 export const recoverySourceSummaryContractInventorySafetyDisplayExamples: RecoverySourceSummaryContractInventorySafetyDisplayExample[] =
   [
     {
-      name: "safe inventory with seven groups",
+      name: "safe inventory with eight groups",
       input: {
         status: "safe",
-        groupCount: 7,
+        groupCount: 8,
       },
-      expected: "safe · 7 group(s) available",
+      expected: "safe · 8 group(s) available",
     },
   ];
 
@@ -348,12 +422,12 @@ function formatRecoverySourceSummaryContractInventoryDisplayText(
 export const recoverySourceSummaryContractInventoryDisplayExamples: RecoverySourceSummaryContractInventoryDisplayExample[] =
   [
     {
-      name: "seven contract groups with safety display latest",
+      name: "eight contract groups with review order display latest",
       input: {
-        groupCount: 7,
-        latestGroupId: "inventory-safety-display",
+        groupCount: 8,
+        latestGroupId: "review-order-display",
       },
-      expected: "7 contract groups · latest inventory-safety-display",
+      expected: "8 contract groups · latest review-order-display",
     },
   ];
 
@@ -418,11 +492,11 @@ function formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groupCo
 export const recoverySourceSummaryContractAggregateCoverageDisplayExamples: RecoverySourceSummaryContractAggregateCoverageDisplayExample[] =
   [
     {
-      name: "seven covered contract groups",
+      name: "eight covered contract groups",
       input: {
-        groupCount: 7,
+        groupCount: 8,
       },
-      expected: "7 contract group(s) covered",
+      expected: "8 contract group(s) covered",
     },
   ];
 
@@ -483,10 +557,11 @@ export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceS
           "aggregate-coverage-display:passing",
           "inventory-display:passing",
           "inventory-safety-display:passing",
+          "review-order-display:passing",
         ],
       },
       expected:
-        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing",
+        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing, review-order-display:passing",
     },
   ];
 
