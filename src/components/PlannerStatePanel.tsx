@@ -51,6 +51,13 @@ export function PlannerStatePanel({
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
           <small>review order: {policyHealth.contractReviewOrder.displayText}</small>
           <small>review order rationale: {policyHealth.contractReviewOrder.rationale}</small>
+          <small>
+            review order examples: {policyHealth.contractReviewOrderDisplayContract.presentation.countText}
+          </small>
+          <small>review order status: {policyHealth.contractReviewOrderDisplayContract.presentation.statusText}</small>
+          <small>
+            review order diagnostics: {policyHealth.contractReviewOrderDisplayContract.presentation.diagnosticsText}
+          </small>
           <small>inventory safety: {policyHealth.contractInventorySafety.displayText}</small>
           <small>inventory safety rationale: {policyHealth.contractInventorySafety.rationale}</small>
           <small>
