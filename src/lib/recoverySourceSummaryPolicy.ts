@@ -21,6 +21,7 @@ import type {
   RecoverySourceSummaryContractInventorySafetyDisplayExample,
   RecoverySourceSummaryContractInventorySafetyDisplayInput,
   RecoverySourceSummaryContractInventorySafetyStatus,
+  RecoverySourceSummaryContractReviewOrder,
   RecoverySourceSummaryPolicyHealthGuidance,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayExample,
   RecoverySourceSummaryPolicyHealthGuidanceDisplayInput,
@@ -163,6 +164,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
   const contractInventorySafety = createRecoverySourceSummaryContractInventorySafety(contractGroups);
   const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
+  const contractReviewOrder = createRecoverySourceSummaryContractReviewOrder(contractGroups);
   const status = getRecoverySourceSummaryPolicyHealthStatus(contractAggregate);
 
   return {
@@ -173,6 +175,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractGroups,
     contractInventory,
     contractInventorySafety,
+    contractReviewOrder,
     contractInventorySafetyDisplayContract,
     contractInventoryDisplayContract,
     contractGroupsDisplayText: formatRecoverySourceSummaryContractGroupsDisplayText(contractGroups),
@@ -209,6 +212,24 @@ function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySo
   return formatRecoverySourceSummaryContractGroupsDisplayInput({
     groupDisplayTexts: groups.map((group) => group.displayText),
   });
+}
+
+function createRecoverySourceSummaryContractReviewOrder(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractReviewOrder {
+  const groupIds = groups.map((group) => group.id);
+
+  return {
+    groupIds,
+    displayText: formatRecoverySourceSummaryContractReviewOrderDisplayText(groupIds),
+    rationale: "Shows the recommended reading order for policy health contract diagnostics.",
+  };
+}
+
+function formatRecoverySourceSummaryContractReviewOrderDisplayText(
+  groupIds: RecoverySourceSummaryContractReviewOrder["groupIds"],
+) {
+  return groupIds.join(" -> ");
 }
 
 function createRecoverySourceSummaryContractInventory(
