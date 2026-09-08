@@ -126,6 +126,7 @@ export type RecoverySourceSummaryContractInventorySafety = {
 export type RecoverySourceSummaryContractReviewOrder = {
   groupIds: RecoverySourceSummaryContractGroupId[];
   displayText: string;
+  rationaleLabel: string;
   rationale: string;
 };
 
