@@ -231,6 +231,7 @@ function createRecoverySourceSummaryContractReviewOrder(
   return {
     groupIds,
     displayText: formatRecoverySourceSummaryContractReviewOrderDisplayText(groupIds),
+    rationaleLabel: "diagnostic reading path",
     rationale: "Shows the recommended reading order for policy health contract diagnostics.",
   };
 }
