@@ -51,6 +51,7 @@ export function PlannerStatePanel({
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
           <small>review order: {policyHealth.contractReviewOrder.displayText}</small>
           <small>review order label: {policyHealth.contractReviewOrder.rationaleLabel}</small>
+          <small>review order scope: {policyHealth.contractReviewOrder.rationaleScope}</small>
           <small>review order rationale: {policyHealth.contractReviewOrder.rationale}</small>
           <small>review label examples: {policyHealth.contractReviewOrderLabelContract.presentation.countText}</small>
           <small>review label status: {policyHealth.contractReviewOrderLabelContract.presentation.statusText}</small>

@@ -243,6 +243,7 @@ function createRecoverySourceSummaryContractReviewOrder(
     rationaleLabel: formatRecoverySourceSummaryContractReviewOrderLabel({
       label: "diagnostic reading path",
     }),
+    rationaleScope: "policy health diagnostics",
     rationale: "Shows the recommended reading order for policy health contract diagnostics.",
   };
 }
