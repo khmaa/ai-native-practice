@@ -128,6 +128,7 @@ export type RecoverySourceSummaryContractReviewOrder = {
   groupIds: RecoverySourceSummaryContractGroupId[];
   displayText: string;
   rationaleLabel: string;
+  rationaleScope: string;
   rationale: string;
 };
 
