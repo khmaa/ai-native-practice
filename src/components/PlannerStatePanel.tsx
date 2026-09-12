@@ -56,6 +56,9 @@ export function PlannerStatePanel({
           <small>review label examples: {policyHealth.contractReviewOrderLabelContract.presentation.countText}</small>
           <small>review label status: {policyHealth.contractReviewOrderLabelContract.presentation.statusText}</small>
           <small>review label diagnostics: {policyHealth.contractReviewOrderLabelContract.presentation.diagnosticsText}</small>
+          <small>review scope examples: {policyHealth.contractReviewOrderScopeContract.presentation.countText}</small>
+          <small>review scope status: {policyHealth.contractReviewOrderScopeContract.presentation.statusText}</small>
+          <small>review scope diagnostics: {policyHealth.contractReviewOrderScopeContract.presentation.diagnosticsText}</small>
           <small>
             review order examples: {policyHealth.contractReviewOrderDisplayContract.presentation.countText}
           </small>
