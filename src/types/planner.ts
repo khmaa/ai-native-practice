@@ -100,7 +100,8 @@ export type RecoverySourceSummaryContractGroupId =
   | "inventory-display"
   | "inventory-safety-display"
   | "review-order-display"
-  | "review-order-label";
+  | "review-order-label"
+  | "review-order-scope";
 
 export type RecoverySourceSummaryContractGroup = {
   id: RecoverySourceSummaryContractGroupId;
@@ -149,6 +150,16 @@ export type RecoverySourceSummaryContractReviewOrderLabelInput = {
 export type RecoverySourceSummaryContractReviewOrderLabelExample = {
   name: string;
   input: RecoverySourceSummaryContractReviewOrderLabelInput;
+  expected: string;
+};
+
+export type RecoverySourceSummaryContractReviewOrderScopeInput = {
+  scope: string;
+};
+
+export type RecoverySourceSummaryContractReviewOrderScopeExample = {
+  name: string;
+  input: RecoverySourceSummaryContractReviewOrderScopeInput;
   expected: string;
 };
 
@@ -235,6 +246,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   contractReviewOrder: RecoverySourceSummaryContractReviewOrder;
   contractReviewOrderDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractReviewOrderLabelContract: RecoverySourceSummaryContractCheckSummary;
+  contractReviewOrderScopeContract: RecoverySourceSummaryContractCheckSummary;
   contractInventorySafetyDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractInventoryDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractGroupsDisplayText: string;
