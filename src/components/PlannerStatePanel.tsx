@@ -49,6 +49,8 @@ export function PlannerStatePanel({
             group display diagnostics: {policyHealth.contractGroupsDisplayContract.presentation.diagnosticsText}
           </small>
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
+          <small>contract density: {policyHealth.contractDensity.displayText}</small>
+          <small>density rationale: {policyHealth.contractDensity.rationale}</small>
           <small>review order: {policyHealth.contractReviewOrder.displayText}</small>
           <small>review order label: {policyHealth.contractReviewOrder.rationaleLabel}</small>
           <small>review order scope: {policyHealth.contractReviewOrder.rationaleScope}</small>

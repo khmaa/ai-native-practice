@@ -14,6 +14,8 @@ import type {
   RecoverySourceSummaryContractCheckSummaryPresentationMetadataExample,
   RecoverySourceSummaryContractCheckSummaryPresentationMetadataInput,
   RecoverySourceSummaryContractCheckSummaryStatus,
+  RecoverySourceSummaryContractDensity,
+  RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
   RecoverySourceSummaryContractInventoryDisplayInput,
@@ -186,6 +188,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
+  const contractDensity = createRecoverySourceSummaryContractDensity(contractGroups);
   const contractInventorySafety = createRecoverySourceSummaryContractInventorySafety(contractGroups);
   const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
   const contractReviewOrder = createRecoverySourceSummaryContractReviewOrder(contractGroups);
@@ -197,6 +200,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     guidanceDisplayContract,
     presentationMetadataContract,
     contractGroups,
+    contractDensity,
     contractInventory,
     contractInventorySafety,
     contractReviewOrder,
@@ -239,6 +243,33 @@ function formatRecoverySourceSummaryContractGroupsDisplayText(groups: RecoverySo
   return formatRecoverySourceSummaryContractGroupsDisplayInput({
     groupDisplayTexts: groups.map((group) => group.displayText),
   });
+}
+
+function createRecoverySourceSummaryContractDensity(
+  groups: RecoverySourceSummaryContractGroup[],
+): RecoverySourceSummaryContractDensity {
+  const groupCount = groups.length;
+  const level = getRecoverySourceSummaryContractDensityLevel(groupCount);
+
+  return {
+    level,
+    groupCount,
+    displayText: formatRecoverySourceSummaryContractDensityDisplayText(level, groupCount),
+    rationale: "Helps learners notice when contract diagnostics become dense enough to need stronger reading aids.",
+  };
+}
+
+function getRecoverySourceSummaryContractDensityLevel(
+  groupCount: number,
+): RecoverySourceSummaryContractDensityLevel {
+  return groupCount >= 10 ? "dense" : "compact";
+}
+
+function formatRecoverySourceSummaryContractDensityDisplayText(
+  level: RecoverySourceSummaryContractDensityLevel,
+  groupCount: number,
+) {
+  return `${level} · ${groupCount} contract group(s)`;
 }
 
 function createRecoverySourceSummaryContractReviewOrder(
