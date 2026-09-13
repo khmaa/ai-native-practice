@@ -110,6 +110,15 @@ export type RecoverySourceSummaryContractGroup = {
   summary: RecoverySourceSummaryContractCheckSummary;
 };
 
+export type RecoverySourceSummaryContractDensityLevel = "compact" | "dense";
+
+export type RecoverySourceSummaryContractDensity = {
+  level: RecoverySourceSummaryContractDensityLevel;
+  groupCount: number;
+  displayText: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryContractInventory = {
   groupCount: number;
   latestGroupId: RecoverySourceSummaryContractGroupId;
@@ -241,6 +250,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   guidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
+  contractDensity: RecoverySourceSummaryContractDensity;
   contractInventory: RecoverySourceSummaryContractInventory;
   contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
   contractReviewOrder: RecoverySourceSummaryContractReviewOrder;
