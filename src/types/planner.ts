@@ -101,7 +101,8 @@ export type RecoverySourceSummaryContractGroupId =
   | "inventory-safety-display"
   | "review-order-display"
   | "review-order-label"
-  | "review-order-scope";
+  | "review-order-scope"
+  | "density-display";
 
 export type RecoverySourceSummaryContractGroup = {
   id: RecoverySourceSummaryContractGroupId;
@@ -117,6 +118,17 @@ export type RecoverySourceSummaryContractDensity = {
   groupCount: number;
   displayText: string;
   rationale: string;
+};
+
+export type RecoverySourceSummaryContractDensityDisplayInput = {
+  level: RecoverySourceSummaryContractDensityLevel;
+  groupCount: number;
+};
+
+export type RecoverySourceSummaryContractDensityDisplayExample = {
+  name: string;
+  input: RecoverySourceSummaryContractDensityDisplayInput;
+  expected: string;
 };
 
 export type RecoverySourceSummaryContractInventory = {
@@ -251,6 +263,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
   contractDensity: RecoverySourceSummaryContractDensity;
+  contractDensityDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractInventory: RecoverySourceSummaryContractInventory;
   contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
   contractReviewOrder: RecoverySourceSummaryContractReviewOrder;
