@@ -51,6 +51,9 @@ export function PlannerStatePanel({
           <small>contract groups: {policyHealth.contractGroupsDisplayText}</small>
           <small>contract density: {policyHealth.contractDensity.displayText}</small>
           <small>density rationale: {policyHealth.contractDensity.rationale}</small>
+          <small>density examples: {policyHealth.contractDensityDisplayContract.presentation.countText}</small>
+          <small>density status: {policyHealth.contractDensityDisplayContract.presentation.statusText}</small>
+          <small>density diagnostics: {policyHealth.contractDensityDisplayContract.presentation.diagnosticsText}</small>
           <small>review order: {policyHealth.contractReviewOrder.displayText}</small>
           <small>review order label: {policyHealth.contractReviewOrder.rationaleLabel}</small>
           <small>review order scope: {policyHealth.contractReviewOrder.rationaleScope}</small>
