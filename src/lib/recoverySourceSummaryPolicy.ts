@@ -17,6 +17,7 @@ import type {
   RecoverySourceSummaryContractDensity,
   RecoverySourceSummaryContractDensityDisplayExample,
   RecoverySourceSummaryContractDensityDisplayInput,
+  RecoverySourceSummaryContractDensityGuidance,
   RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
@@ -197,6 +198,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
   const contractDensity = createRecoverySourceSummaryContractDensity(contractGroups);
+  const contractDensityGuidance = createRecoverySourceSummaryContractDensityGuidance(contractDensity);
   const contractInventorySafety = createRecoverySourceSummaryContractInventorySafety(contractGroups);
   const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
   const contractReviewOrder = createRecoverySourceSummaryContractReviewOrder(contractGroups);
@@ -209,6 +211,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     presentationMetadataContract,
     contractGroups,
     contractDensity,
+    contractDensityGuidance,
     contractDensityDisplayContract,
     contractInventory,
     contractInventorySafety,
@@ -335,6 +338,24 @@ function formatRecoverySourceSummaryContractDensityDisplayInput(
   input: RecoverySourceSummaryContractDensityDisplayInput,
 ) {
   return formatRecoverySourceSummaryContractDensityDisplayText(input.level, input.groupCount);
+}
+
+function createRecoverySourceSummaryContractDensityGuidance(
+  density: RecoverySourceSummaryContractDensity,
+): RecoverySourceSummaryContractDensityGuidance {
+  if (density.level === "dense") {
+    return {
+      displayText: "use review order first",
+      message: "Read the review order before scanning individual contract diagnostics.",
+      rationale: "Dense policy health diagnostics need a reading path before detailed inspection.",
+    };
+  }
+
+  return {
+    displayText: "scan diagnostics directly",
+    message: "The contract list is compact enough to scan without an extra reading path.",
+    rationale: "Compact policy health diagnostics can be read directly.",
+  };
 }
 
 function createRecoverySourceSummaryContractReviewOrder(

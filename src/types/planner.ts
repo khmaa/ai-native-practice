@@ -120,6 +120,12 @@ export type RecoverySourceSummaryContractDensity = {
   rationale: string;
 };
 
+export type RecoverySourceSummaryContractDensityGuidance = {
+  displayText: string;
+  message: string;
+  rationale: string;
+};
+
 export type RecoverySourceSummaryContractDensityDisplayInput = {
   level: RecoverySourceSummaryContractDensityLevel;
   groupCount: number;
@@ -263,6 +269,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   presentationMetadataContract: RecoverySourceSummaryContractCheckSummary;
   contractGroups: RecoverySourceSummaryContractGroup[];
   contractDensity: RecoverySourceSummaryContractDensity;
+  contractDensityGuidance: RecoverySourceSummaryContractDensityGuidance;
   contractDensityDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractInventory: RecoverySourceSummaryContractInventory;
   contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
