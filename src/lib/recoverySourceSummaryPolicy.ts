@@ -18,6 +18,8 @@ import type {
   RecoverySourceSummaryContractDensityDisplayExample,
   RecoverySourceSummaryContractDensityDisplayInput,
   RecoverySourceSummaryContractDensityGuidance,
+  RecoverySourceSummaryContractDensityGuidanceDisplayExample,
+  RecoverySourceSummaryContractDensityGuidanceDisplayInput,
   RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
@@ -139,6 +141,8 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contractInventorySafetyDisplayContract =
     summarizeRecoverySourceSummaryContractInventorySafetyDisplayChecks();
   const contractDensityDisplayContract = summarizeRecoverySourceSummaryContractDensityDisplayChecks();
+  const contractDensityGuidanceDisplayContract =
+    summarizeRecoverySourceSummaryContractDensityGuidanceDisplayChecks();
   const contractReviewOrderDisplayContract = summarizeRecoverySourceSummaryContractReviewOrderDisplayChecks();
   const contractReviewOrderLabelContract = summarizeRecoverySourceSummaryContractReviewOrderLabelChecks();
   const contractReviewOrderScopeContract = summarizeRecoverySourceSummaryContractReviewOrderScopeChecks();
@@ -194,6 +198,11 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
       "density display contract",
       contractDensityDisplayContract,
     ),
+    createRecoverySourceSummaryContractGroup(
+      "density-guidance-display",
+      "density guidance display contract",
+      contractDensityGuidanceDisplayContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
@@ -213,6 +222,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractDensity,
     contractDensityGuidance,
     contractDensityDisplayContract,
+    contractDensityGuidanceDisplayContract,
     contractInventory,
     contractInventorySafety,
     contractReviewOrder,
@@ -290,9 +300,9 @@ export const recoverySourceSummaryContractDensityDisplayExamples: RecoverySource
       name: "dense contract group display",
       input: {
         level: "dense",
-        groupCount: 11,
+        groupCount: 12,
       },
-      expected: "dense · 11 contract group(s)",
+      expected: "dense · 12 contract group(s)",
     },
   ];
 
@@ -345,17 +355,76 @@ function createRecoverySourceSummaryContractDensityGuidance(
 ): RecoverySourceSummaryContractDensityGuidance {
   if (density.level === "dense") {
     return {
-      displayText: "use review order first",
+      displayText: formatRecoverySourceSummaryContractDensityGuidanceDisplayInput({
+        displayText: "use review order first",
+      }),
       message: "Read the review order before scanning individual contract diagnostics.",
       rationale: "Dense policy health diagnostics need a reading path before detailed inspection.",
     };
   }
 
   return {
-    displayText: "scan diagnostics directly",
+    displayText: formatRecoverySourceSummaryContractDensityGuidanceDisplayInput({
+      displayText: "scan diagnostics directly",
+    }),
     message: "The contract list is compact enough to scan without an extra reading path.",
     rationale: "Compact policy health diagnostics can be read directly.",
   };
+}
+
+export const recoverySourceSummaryContractDensityGuidanceDisplayExamples: RecoverySourceSummaryContractDensityGuidanceDisplayExample[] =
+  [
+    {
+      name: "dense guidance display",
+      input: {
+        displayText: "use review order first",
+      },
+      expected: "use review order first",
+    },
+  ];
+
+export function checkRecoverySourceSummaryContractDensityGuidanceDisplayExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractDensityGuidanceDisplayExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryContractDensityGuidanceDisplayInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["contractDensityGuidanceDisplayText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryContractDensityGuidanceDisplayChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractDensityGuidanceDisplayExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
+
+  return {
+    status,
+    statusReason,
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
+    total,
+    passed,
+    displayText,
+    diagnostics,
+  };
+}
+
+function formatRecoverySourceSummaryContractDensityGuidanceDisplayInput(
+  input: RecoverySourceSummaryContractDensityGuidanceDisplayInput,
+) {
+  return input.displayText;
 }
 
 function createRecoverySourceSummaryContractReviewOrder(
@@ -385,7 +454,7 @@ function formatRecoverySourceSummaryContractReviewOrderDisplayText(
 export const recoverySourceSummaryContractReviewOrderDisplayExamples: RecoverySourceSummaryContractReviewOrderDisplayExample[] =
   [
     {
-      name: "eleven contract groups in review order",
+      name: "twelve contract groups in review order",
       input: {
         groupIds: [
           "summary",
@@ -399,10 +468,11 @@ export const recoverySourceSummaryContractReviewOrderDisplayExamples: RecoverySo
           "review-order-label",
           "review-order-scope",
           "density-display",
+          "density-guidance-display",
         ],
       },
       expected:
-        "summary -> guidance-display -> presentation-metadata -> contract-groups-display -> aggregate-coverage-display -> inventory-display -> inventory-safety-display -> review-order-display -> review-order-label -> review-order-scope -> density-display",
+        "summary -> guidance-display -> presentation-metadata -> contract-groups-display -> aggregate-coverage-display -> inventory-display -> inventory-safety-display -> review-order-display -> review-order-label -> review-order-scope -> density-display -> density-guidance-display",
     },
   ];
 
@@ -613,12 +683,12 @@ function formatRecoverySourceSummaryContractInventorySafetyDisplayText(
 export const recoverySourceSummaryContractInventorySafetyDisplayExamples: RecoverySourceSummaryContractInventorySafetyDisplayExample[] =
   [
     {
-      name: "safe inventory with eleven groups",
+      name: "safe inventory with twelve groups",
       input: {
         status: "safe",
-        groupCount: 11,
+        groupCount: 12,
       },
-      expected: "safe · 11 group(s) available",
+      expected: "safe · 12 group(s) available",
     },
   ];
 
@@ -676,12 +746,12 @@ function formatRecoverySourceSummaryContractInventoryDisplayText(
 export const recoverySourceSummaryContractInventoryDisplayExamples: RecoverySourceSummaryContractInventoryDisplayExample[] =
   [
     {
-      name: "eleven contract groups with density display latest",
+      name: "twelve contract groups with density guidance display latest",
       input: {
-        groupCount: 11,
-        latestGroupId: "density-display",
+        groupCount: 12,
+        latestGroupId: "density-guidance-display",
       },
-      expected: "11 contract groups · latest density-display",
+      expected: "12 contract groups · latest density-guidance-display",
     },
   ];
 
@@ -746,11 +816,11 @@ function formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groupCo
 export const recoverySourceSummaryContractAggregateCoverageDisplayExamples: RecoverySourceSummaryContractAggregateCoverageDisplayExample[] =
   [
     {
-      name: "eleven covered contract groups",
+      name: "twelve covered contract groups",
       input: {
-        groupCount: 11,
+        groupCount: 12,
       },
-      expected: "11 contract group(s) covered",
+      expected: "12 contract group(s) covered",
     },
   ];
 
@@ -815,10 +885,11 @@ export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceS
           "review-order-label:passing",
           "review-order-scope:passing",
           "density-display:passing",
+          "density-guidance-display:passing",
         ],
       },
       expected:
-        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing, review-order-display:passing, review-order-label:passing, review-order-scope:passing, density-display:passing",
+        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing, review-order-display:passing, review-order-label:passing, review-order-scope:passing, density-display:passing, density-guidance-display:passing",
     },
   ];
 
