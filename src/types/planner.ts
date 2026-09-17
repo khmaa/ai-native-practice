@@ -103,7 +103,8 @@ export type RecoverySourceSummaryContractGroupId =
   | "review-order-label"
   | "review-order-scope"
   | "density-display"
-  | "density-guidance-display";
+  | "density-guidance-display"
+  | "density-guidance-detail";
 
 export type RecoverySourceSummaryContractGroup = {
   id: RecoverySourceSummaryContractGroupId;
@@ -134,6 +135,16 @@ export type RecoverySourceSummaryContractDensityGuidanceDisplayInput = {
 export type RecoverySourceSummaryContractDensityGuidanceDisplayExample = {
   name: string;
   input: RecoverySourceSummaryContractDensityGuidanceDisplayInput;
+  expected: string;
+};
+
+export type RecoverySourceSummaryContractDensityGuidanceDetailInput = {
+  message: string;
+};
+
+export type RecoverySourceSummaryContractDensityGuidanceDetailExample = {
+  name: string;
+  input: RecoverySourceSummaryContractDensityGuidanceDetailInput;
   expected: string;
 };
 
@@ -283,6 +294,7 @@ export type RecoverySourceSummaryPolicyHealthSnapshot = {
   contractDensityGuidance: RecoverySourceSummaryContractDensityGuidance;
   contractDensityDisplayContract: RecoverySourceSummaryContractCheckSummary;
   contractDensityGuidanceDisplayContract: RecoverySourceSummaryContractCheckSummary;
+  contractDensityGuidanceDetailContract: RecoverySourceSummaryContractCheckSummary;
   contractInventory: RecoverySourceSummaryContractInventory;
   contractInventorySafety: RecoverySourceSummaryContractInventorySafety;
   contractReviewOrder: RecoverySourceSummaryContractReviewOrder;
