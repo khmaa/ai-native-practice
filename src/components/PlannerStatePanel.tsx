@@ -63,6 +63,16 @@ export function PlannerStatePanel({
             {policyHealth.contractDensityGuidanceDetailContract.presentation.diagnosticsText}
           </small>
           <small>
+            density rationale examples: {policyHealth.contractDensityGuidanceRationaleContract.presentation.countText}
+          </small>
+          <small>
+            density rationale status: {policyHealth.contractDensityGuidanceRationaleContract.presentation.statusText}
+          </small>
+          <small>
+            density rationale diagnostics:{" "}
+            {policyHealth.contractDensityGuidanceRationaleContract.presentation.diagnosticsText}
+          </small>
+          <small>
             density guidance examples: {policyHealth.contractDensityGuidanceDisplayContract.presentation.countText}
           </small>
           <small>density guidance status: {policyHealth.contractDensityGuidanceDisplayContract.presentation.statusText}</small>
