@@ -22,6 +22,8 @@ import type {
   RecoverySourceSummaryContractDensityGuidanceDetailInput,
   RecoverySourceSummaryContractDensityGuidanceDisplayExample,
   RecoverySourceSummaryContractDensityGuidanceDisplayInput,
+  RecoverySourceSummaryContractDensityGuidanceRationaleExample,
+  RecoverySourceSummaryContractDensityGuidanceRationaleInput,
   RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
@@ -147,6 +149,8 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     summarizeRecoverySourceSummaryContractDensityGuidanceDisplayChecks();
   const contractDensityGuidanceDetailContract =
     summarizeRecoverySourceSummaryContractDensityGuidanceDetailChecks();
+  const contractDensityGuidanceRationaleContract =
+    summarizeRecoverySourceSummaryContractDensityGuidanceRationaleChecks();
   const contractReviewOrderDisplayContract = summarizeRecoverySourceSummaryContractReviewOrderDisplayChecks();
   const contractReviewOrderLabelContract = summarizeRecoverySourceSummaryContractReviewOrderLabelChecks();
   const contractReviewOrderScopeContract = summarizeRecoverySourceSummaryContractReviewOrderScopeChecks();
@@ -212,6 +216,11 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
       "density guidance detail contract",
       contractDensityGuidanceDetailContract,
     ),
+    createRecoverySourceSummaryContractGroup(
+      "density-guidance-rationale",
+      "density guidance rationale contract",
+      contractDensityGuidanceRationaleContract,
+    ),
   ];
   const contractAggregate = summarizeRecoverySourceSummaryPolicyContractAggregate(contractGroups);
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
@@ -233,6 +242,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractDensityDisplayContract,
     contractDensityGuidanceDisplayContract,
     contractDensityGuidanceDetailContract,
+    contractDensityGuidanceRationaleContract,
     contractInventory,
     contractInventorySafety,
     contractReviewOrder,
@@ -310,9 +320,9 @@ export const recoverySourceSummaryContractDensityDisplayExamples: RecoverySource
       name: "dense contract group display",
       input: {
         level: "dense",
-        groupCount: 13,
+        groupCount: 14,
       },
-      expected: "dense · 13 contract group(s)",
+      expected: "dense · 14 contract group(s)",
     },
   ];
 
@@ -371,7 +381,9 @@ function createRecoverySourceSummaryContractDensityGuidance(
       message: formatRecoverySourceSummaryContractDensityGuidanceDetailInput({
         message: "Read the review order before scanning individual contract diagnostics.",
       }),
-      rationale: "Dense policy health diagnostics need a reading path before detailed inspection.",
+      rationale: formatRecoverySourceSummaryContractDensityGuidanceRationaleInput({
+        rationale: "Dense policy health diagnostics need a reading path before detailed inspection.",
+      }),
     };
   }
 
@@ -382,7 +394,9 @@ function createRecoverySourceSummaryContractDensityGuidance(
     message: formatRecoverySourceSummaryContractDensityGuidanceDetailInput({
       message: "The contract list is compact enough to scan without an extra reading path.",
     }),
-    rationale: "Compact policy health diagnostics can be read directly.",
+    rationale: formatRecoverySourceSummaryContractDensityGuidanceRationaleInput({
+      rationale: "Compact policy health diagnostics can be read directly.",
+    }),
   };
 }
 
@@ -496,6 +510,61 @@ function formatRecoverySourceSummaryContractDensityGuidanceDetailInput(
   return input.message;
 }
 
+export const recoverySourceSummaryContractDensityGuidanceRationaleExamples: RecoverySourceSummaryContractDensityGuidanceRationaleExample[] =
+  [
+    {
+      name: "dense guidance rationale",
+      input: {
+        rationale: "Dense policy health diagnostics need a reading path before detailed inspection.",
+      },
+      expected: "Dense policy health diagnostics need a reading path before detailed inspection.",
+    },
+  ];
+
+export function checkRecoverySourceSummaryContractDensityGuidanceRationaleExamples(): RecoverySourceSummaryContractCheck[] {
+  return recoverySourceSummaryContractDensityGuidanceRationaleExamples.map((example) => {
+    const actual = formatRecoverySourceSummaryContractDensityGuidanceRationaleInput(example.input);
+
+    return {
+      name: example.name,
+      passed: actual === example.expected,
+      mismatchedFields: actual === example.expected ? [] : ["contractDensityGuidanceRationaleText"],
+    };
+  });
+}
+
+export function summarizeRecoverySourceSummaryContractDensityGuidanceRationaleChecks(): RecoverySourceSummaryContractCheckSummary {
+  const checks = checkRecoverySourceSummaryContractDensityGuidanceRationaleExamples();
+  const total = checks.length;
+  const passed = checks.filter((check) => check.passed).length;
+  const status = getRecoverySourceSummaryContractCheckSummaryStatus(passed, total);
+  const statusReason = getRecoverySourceSummaryContractCheckSummaryStatusReason(passed, total);
+  const displayText = formatRecoverySourceSummaryContractCheckSummaryDisplayText(checks);
+  const statusDisplayText = formatRecoverySourceSummaryContractCheckSummaryStatusDisplayText(status, statusReason);
+  const diagnostics = summarizeRecoverySourceSummaryContractDiagnostics(checks);
+
+  return {
+    status,
+    statusReason,
+    statusDisplayText,
+    presentation: createRecoverySourceSummaryContractCheckSummaryPresentation(
+      displayText,
+      statusDisplayText,
+      diagnostics,
+    ),
+    total,
+    passed,
+    displayText,
+    diagnostics,
+  };
+}
+
+function formatRecoverySourceSummaryContractDensityGuidanceRationaleInput(
+  input: RecoverySourceSummaryContractDensityGuidanceRationaleInput,
+) {
+  return input.rationale;
+}
+
 function createRecoverySourceSummaryContractReviewOrder(
   groups: RecoverySourceSummaryContractGroup[],
 ): RecoverySourceSummaryContractReviewOrder {
@@ -523,7 +592,7 @@ function formatRecoverySourceSummaryContractReviewOrderDisplayText(
 export const recoverySourceSummaryContractReviewOrderDisplayExamples: RecoverySourceSummaryContractReviewOrderDisplayExample[] =
   [
     {
-      name: "thirteen contract groups in review order",
+      name: "fourteen contract groups in review order",
       input: {
         groupIds: [
           "summary",
@@ -539,10 +608,11 @@ export const recoverySourceSummaryContractReviewOrderDisplayExamples: RecoverySo
           "density-display",
           "density-guidance-display",
           "density-guidance-detail",
+          "density-guidance-rationale",
         ],
       },
       expected:
-        "summary -> guidance-display -> presentation-metadata -> contract-groups-display -> aggregate-coverage-display -> inventory-display -> inventory-safety-display -> review-order-display -> review-order-label -> review-order-scope -> density-display -> density-guidance-display -> density-guidance-detail",
+        "summary -> guidance-display -> presentation-metadata -> contract-groups-display -> aggregate-coverage-display -> inventory-display -> inventory-safety-display -> review-order-display -> review-order-label -> review-order-scope -> density-display -> density-guidance-display -> density-guidance-detail -> density-guidance-rationale",
     },
   ];
 
@@ -753,12 +823,12 @@ function formatRecoverySourceSummaryContractInventorySafetyDisplayText(
 export const recoverySourceSummaryContractInventorySafetyDisplayExamples: RecoverySourceSummaryContractInventorySafetyDisplayExample[] =
   [
     {
-      name: "safe inventory with thirteen groups",
+      name: "safe inventory with fourteen groups",
       input: {
         status: "safe",
-        groupCount: 13,
+        groupCount: 14,
       },
-      expected: "safe · 13 group(s) available",
+      expected: "safe · 14 group(s) available",
     },
   ];
 
@@ -816,12 +886,12 @@ function formatRecoverySourceSummaryContractInventoryDisplayText(
 export const recoverySourceSummaryContractInventoryDisplayExamples: RecoverySourceSummaryContractInventoryDisplayExample[] =
   [
     {
-      name: "thirteen contract groups with density guidance detail latest",
+      name: "fourteen contract groups with density guidance rationale latest",
       input: {
-        groupCount: 13,
-        latestGroupId: "density-guidance-detail",
+        groupCount: 14,
+        latestGroupId: "density-guidance-rationale",
       },
-      expected: "13 contract groups · latest density-guidance-detail",
+      expected: "14 contract groups · latest density-guidance-rationale",
     },
   ];
 
@@ -886,11 +956,11 @@ function formatRecoverySourceSummaryContractAggregateCoverageDisplayText(groupCo
 export const recoverySourceSummaryContractAggregateCoverageDisplayExamples: RecoverySourceSummaryContractAggregateCoverageDisplayExample[] =
   [
     {
-      name: "thirteen covered contract groups",
+      name: "fourteen covered contract groups",
       input: {
-        groupCount: 13,
+        groupCount: 14,
       },
-      expected: "13 contract group(s) covered",
+      expected: "14 contract group(s) covered",
     },
   ];
 
@@ -957,10 +1027,11 @@ export const recoverySourceSummaryContractGroupsDisplayExamples: RecoverySourceS
           "density-display:passing",
           "density-guidance-display:passing",
           "density-guidance-detail:passing",
+          "density-guidance-rationale:passing",
         ],
       },
       expected:
-        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing, review-order-display:passing, review-order-label:passing, review-order-scope:passing, density-display:passing, density-guidance-display:passing, density-guidance-detail:passing",
+        "summary:passing, guidance-display:passing, presentation-metadata:passing, contract-groups-display:passing, aggregate-coverage-display:passing, inventory-display:passing, inventory-safety-display:passing, review-order-display:passing, review-order-label:passing, review-order-scope:passing, density-display:passing, density-guidance-display:passing, density-guidance-detail:passing, density-guidance-rationale:passing",
     },
   ];
 
