@@ -24,6 +24,7 @@ import type {
   RecoverySourceSummaryContractDensityGuidanceDisplayInput,
   RecoverySourceSummaryContractDensityGuidanceRationaleExample,
   RecoverySourceSummaryContractDensityGuidanceRationaleInput,
+  RecoverySourceSummaryContractDensityGuidanceSet,
   RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
@@ -226,6 +227,8 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
   const contractAggregateCoverage = createRecoverySourceSummaryContractAggregateCoverage(contractGroups);
   const contractDensity = createRecoverySourceSummaryContractDensity(contractGroups);
   const contractDensityGuidance = createRecoverySourceSummaryContractDensityGuidance(contractDensity);
+  const contractDensityGuidanceSet =
+    createRecoverySourceSummaryContractDensityGuidanceSet(contractDensityGuidance);
   const contractInventorySafety = createRecoverySourceSummaryContractInventorySafety(contractGroups);
   const contractInventory = createRecoverySourceSummaryContractInventory(contractGroups);
   const contractReviewOrder = createRecoverySourceSummaryContractReviewOrder(contractGroups);
@@ -239,6 +242,7 @@ export function createRecoverySourceSummaryPolicyHealthSnapshot(): RecoverySourc
     contractGroups,
     contractDensity,
     contractDensityGuidance,
+    contractDensityGuidanceSet,
     contractDensityDisplayContract,
     contractDensityGuidanceDisplayContract,
     contractDensityGuidanceDetailContract,
@@ -398,6 +402,22 @@ function createRecoverySourceSummaryContractDensityGuidance(
       rationale: "Compact policy health diagnostics can be read directly.",
     }),
   };
+}
+
+function createRecoverySourceSummaryContractDensityGuidanceSet(
+  guidance: RecoverySourceSummaryContractDensityGuidance,
+): RecoverySourceSummaryContractDensityGuidanceSet {
+  const itemCount = [guidance.displayText, guidance.message, guidance.rationale].filter(Boolean).length;
+
+  return {
+    itemCount,
+    displayText: formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount),
+    rationale: "Confirms that density guidance includes display, detail, and rationale text.",
+  };
+}
+
+function formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount: number) {
+  return `${itemCount}/3 guidance item(s) present`;
 }
 
 export const recoverySourceSummaryContractDensityGuidanceDisplayExamples: RecoverySourceSummaryContractDensityGuidanceDisplayExample[] =
