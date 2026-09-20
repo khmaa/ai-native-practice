@@ -25,6 +25,7 @@ import type {
   RecoverySourceSummaryContractDensityGuidanceRationaleExample,
   RecoverySourceSummaryContractDensityGuidanceRationaleInput,
   RecoverySourceSummaryContractDensityGuidanceSet,
+  RecoverySourceSummaryContractDensityGuidanceSetStatus,
   RecoverySourceSummaryContractDensityLevel,
   RecoverySourceSummaryContractInventory,
   RecoverySourceSummaryContractInventoryDisplayExample,
@@ -408,16 +409,31 @@ function createRecoverySourceSummaryContractDensityGuidanceSet(
   guidance: RecoverySourceSummaryContractDensityGuidance,
 ): RecoverySourceSummaryContractDensityGuidanceSet {
   const itemCount = [guidance.displayText, guidance.message, guidance.rationale].filter(Boolean).length;
+  const status = getRecoverySourceSummaryContractDensityGuidanceSetStatus(itemCount);
 
   return {
+    status,
     itemCount,
     displayText: formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount),
+    statusDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(status),
     rationale: "Confirms that density guidance includes display, detail, and rationale text.",
   };
 }
 
+function getRecoverySourceSummaryContractDensityGuidanceSetStatus(
+  itemCount: number,
+): RecoverySourceSummaryContractDensityGuidanceSetStatus {
+  return itemCount === 3 ? "ready" : "incomplete";
+}
+
 function formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount: number) {
   return `${itemCount}/3 guidance item(s) present`;
+}
+
+function formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(
+  status: RecoverySourceSummaryContractDensityGuidanceSetStatus,
+) {
+  return status === "ready" ? "ready for review" : "needs guidance repair";
 }
 
 export const recoverySourceSummaryContractDensityGuidanceDisplayExamples: RecoverySourceSummaryContractDensityGuidanceDisplayExample[] =

@@ -129,9 +129,13 @@ export type RecoverySourceSummaryContractDensityGuidance = {
   rationale: string;
 };
 
+export type RecoverySourceSummaryContractDensityGuidanceSetStatus = "ready" | "incomplete";
+
 export type RecoverySourceSummaryContractDensityGuidanceSet = {
+  status: RecoverySourceSummaryContractDensityGuidanceSetStatus;
   itemCount: number;
   displayText: string;
+  statusDisplayText: string;
   rationale: string;
 };
 
