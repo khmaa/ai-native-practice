@@ -416,6 +416,7 @@ function createRecoverySourceSummaryContractDensityGuidanceSet(
     itemCount,
     displayText: formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount),
     statusDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(status),
+    statusReason: getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(status, itemCount),
     rationale: "Confirms that density guidance includes display, detail, and rationale text.",
   };
 }
@@ -434,6 +435,15 @@ function formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(
   status: RecoverySourceSummaryContractDensityGuidanceSetStatus,
 ) {
   return status === "ready" ? "ready for review" : "needs guidance repair";
+}
+
+function getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(
+  status: RecoverySourceSummaryContractDensityGuidanceSetStatus,
+  itemCount: number,
+) {
+  return status === "ready"
+    ? "All density guidance items are present."
+    : `${3 - itemCount} density guidance item(s) are missing.`;
 }
 
 export const recoverySourceSummaryContractDensityGuidanceDisplayExamples: RecoverySourceSummaryContractDensityGuidanceDisplayExample[] =

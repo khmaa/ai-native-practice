@@ -136,6 +136,7 @@ export type RecoverySourceSummaryContractDensityGuidanceSet = {
   itemCount: number;
   displayText: string;
   statusDisplayText: string;
+  statusReason: string;
   rationale: string;
 };
 
