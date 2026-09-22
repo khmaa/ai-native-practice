@@ -410,13 +410,17 @@ function createRecoverySourceSummaryContractDensityGuidanceSet(
 ): RecoverySourceSummaryContractDensityGuidanceSet {
   const itemCount = [guidance.displayText, guidance.message, guidance.rationale].filter(Boolean).length;
   const status = getRecoverySourceSummaryContractDensityGuidanceSetStatus(itemCount);
+  const statusReason = getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(status, itemCount);
 
   return {
     status,
     itemCount,
     displayText: formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount),
     statusDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(status),
-    statusReason: getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(status, itemCount),
+    statusReason,
+    statusReasonDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusReasonDisplayText(
+      statusReason,
+    ),
     rationale: "Confirms that density guidance includes display, detail, and rationale text.",
   };
 }
@@ -444,6 +448,12 @@ function getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(
   return status === "ready"
     ? "All density guidance items are present."
     : `${3 - itemCount} density guidance item(s) are missing.`;
+}
+
+function formatRecoverySourceSummaryContractDensityGuidanceSetStatusReasonDisplayText(statusReason: string) {
+  const limit = 48;
+
+  return statusReason.length <= limit ? statusReason : `${statusReason.slice(0, limit - 3)}...`;
 }
 
 export const recoverySourceSummaryContractDensityGuidanceDisplayExamples: RecoverySourceSummaryContractDensityGuidanceDisplayExample[] =
