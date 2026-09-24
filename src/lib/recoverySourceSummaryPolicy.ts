@@ -411,6 +411,8 @@ function createRecoverySourceSummaryContractDensityGuidanceSet(
   const itemCount = [guidance.displayText, guidance.message, guidance.rationale].filter(Boolean).length;
   const status = getRecoverySourceSummaryContractDensityGuidanceSetStatus(itemCount);
   const statusReason = getRecoverySourceSummaryContractDensityGuidanceSetStatusReason(status, itemCount);
+  const statusReasonDisplayText =
+    formatRecoverySourceSummaryContractDensityGuidanceSetStatusReasonDisplayText(statusReason);
 
   return {
     status,
@@ -418,9 +420,8 @@ function createRecoverySourceSummaryContractDensityGuidanceSet(
     displayText: formatRecoverySourceSummaryContractDensityGuidanceSetDisplayText(itemCount),
     statusDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusDisplayText(status),
     statusReason,
-    statusReasonDisplayText: formatRecoverySourceSummaryContractDensityGuidanceSetStatusReasonDisplayText(
-      statusReason,
-    ),
+    statusReasonDisplayText,
+    statusReasonTruncated: statusReasonDisplayText !== statusReason,
     rationale: "Confirms that density guidance includes display, detail, and rationale text.",
   };
 }

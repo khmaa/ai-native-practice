@@ -57,6 +57,10 @@ export function PlannerStatePanel({
           <small>density guidance set: {policyHealth.contractDensityGuidanceSet.displayText}</small>
           <small>density guidance set status: {policyHealth.contractDensityGuidanceSet.statusDisplayText}</small>
           <small>density guidance set reason: {policyHealth.contractDensityGuidanceSet.statusReasonDisplayText}</small>
+          <small>
+            density guidance set reason display:{" "}
+            {policyHealth.contractDensityGuidanceSet.statusReasonTruncated ? "truncated reason" : "complete reason"}
+          </small>
           <small>density guidance set rationale: {policyHealth.contractDensityGuidanceSet.rationale}</small>
           <small>
             density detail examples: {policyHealth.contractDensityGuidanceDetailContract.presentation.countText}

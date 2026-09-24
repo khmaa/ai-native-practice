@@ -138,6 +138,7 @@ export type RecoverySourceSummaryContractDensityGuidanceSet = {
   statusDisplayText: string;
   statusReason: string;
   statusReasonDisplayText: string;
+  statusReasonTruncated: boolean;
   rationale: string;
 };
 
